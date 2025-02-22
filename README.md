@@ -1,17 +1,16 @@
 # Hello 👋 I am codekiln
 
-## AI Architect
+## Systems Architect, AI Engineer, [Cyborg](codekiln.github.io/logseq-encode-garden/)
 
-- 🌍 I'm from New England, USA
-- 🔭 I'm currently working on [growing a cyborg](codekiln.github.io/logseq-encode-garden/)
-- 🌱 I'm currently learning LangGraph with LangSmith for AI Agent Evals
-- 💬 Ask me about AI pedagogy, discursive reasoning
+- 🌱 Right now I'm working with AI systems in LangGraph and using LangSmith for evals
+- 💬 Ask me about AI pedagogy, discursive reasoning, AI coding
 - ⚡ Fun fact about me: - https://soundcloud.com/codekiln
 
 <a href="https://www.github.com/codekiln" target="_blank" rel="noreferrer"><img
 src="https://img.shields.io/github/followers/codekiln?logo=github&style=for-the-badge&color=0891b2&labelColor=000000" /></a> &nbsp;
 <a href="https://www.x.com/codekiln" target="_blank" rel="noreferrer"><img
 src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the-badge&labelColor=000000" /></a> &nbsp;
+
 ### Skills
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"><picture>
@@ -24,128 +23,97 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <img height="36" width="36" src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" />
 </picture></a> &nbsp;
 <a href="https://www.oracle.com/java/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/java-colored.svg" alt="Java" />
+<img height="36" width="36" src="https://raw.githubusercontent.com/devicons/devicon/master/icons/java/java-original.svg" alt="Java" />
 </picture></a> &nbsp;
 <a href="https://www.php.net/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/php-colored.svg" alt="PHP" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/php/777BB4" alt="PHP" />
 </picture></a> &nbsp;
 <a href="https://www.r-project.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/rlang-colored.svg" alt="rlang" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/r/276DC3" alt="R" />
 </picture></a> &nbsp;
 <a href="https://vuejs.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/vuejs-colored.svg" alt="Vue" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="Vue" />
 </picture></a> &nbsp;
 <a href="https://www.gatsbyjs.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/gatsby-colored.svg" alt="Gatsby" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/gatsby/663399" alt="Gatsby" />
 </picture></a> &nbsp;
 <a href="https://www.w3.org/TR/CSS/#css" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/css3-colored.svg" alt="CSS3" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/css3/1572B6" alt="CSS3" />
 </picture></a> &nbsp;
 <a href="https://sass-lang.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/sass-colored.svg" alt="Sass" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/sass/CC6699" alt="Sass" />
 </picture></a> &nbsp;
 <a href="https://reactjs.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/react-colored.svg" alt="React" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/react/61DAFB" alt="React" />
 </picture></a> &nbsp;
 <a href="https://developer.mozilla.org/en-US/docs/Glossary/HTML5" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/html5-colored.svg" alt="HTML5" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/html5/E34F26" alt="HTML5" />
 </picture></a> &nbsp;
 <a href="https://mui.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/materialui-colored.svg" alt="Material UI" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/mui/007FFF" alt="Material UI" />
 </picture></a> &nbsp;
 <a href="https://redux.js.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/redux-colored.svg" alt="Redux" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/redux/764ABC" alt="Redux" />
 </picture></a> &nbsp;
 <a href="https://webpack.js.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/webpack-colored.svg" alt="Webpack" />
-</picture></a> &nbsp;
-<a href="https://babeljs.io/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/babel-colored-dark.svg" alt="Babel" />
-</picture></a> &nbsp;
-<a href="https://getbootstrap.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/bootstrap-colored.svg" alt="Bootstrap" />
-</picture></a> &nbsp;
-<a href="https://nuxtjs.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/nuxtjs-colored.svg" alt="Nuxtjs" />
-</picture></a> &nbsp;
-<a href="https://jquery.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/jquery-colored.svg" alt="JQuery" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/webpack/8DD6F9" alt="Webpack" />
 </picture></a> &nbsp;
 <a href="https://nodejs.org/en/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/nodejs-colored.svg" alt="NodeJS" />
-</picture></a> &nbsp;
-<a href="https://expressjs.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/express-colored-dark.svg" alt="Express" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/nodedotjs/339933" alt="NodeJS" />
 </picture></a> &nbsp;
 <a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/django-colored-dark.svg" alt="Django" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/django/092E20" alt="Django" />
 </picture></a> &nbsp;
 <a href="https://graphql.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/graphql-colored.svg" alt="GraphQL" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/graphql/E10098" alt="GraphQL" />
 </picture></a> &nbsp;
 <a href="https://www.mongodb.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/mongodb-colored.svg" alt="MongoDB" />
-</picture></a> &nbsp;
-<a href="https://www.oracle.com/uk/index.html" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/oracle-colored.svg" alt="Oracle" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/mongodb/47A248" alt="MongoDB" />
 </picture></a> &nbsp;
 <a href="https://www.mysql.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/mysql-colored.svg" alt="MySQL" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/mysql/4479A1" alt="MySQL" />
 </picture></a> &nbsp;
 <a href="https://www.postgresql.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/postgresql-colored.svg" alt="PostgreSQL" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/postgresql/4169E1" alt="PostgreSQL" />
 </picture></a> &nbsp;
 <a href="https://firebase.google.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/firebase-colored.svg" alt="Firebase" />
-</picture></a> &nbsp;
-<a href="https://flask.palletsprojects.com/en/2.0.x/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/flask-colored-dark.svg" alt="Flask" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/firebase/FFCA28" alt="Firebase" />
 </picture></a> &nbsp;
 <a href="https://fastapi.tiangolo.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/fastapi-colored.svg" alt="Fast API" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/fastapi/009688" alt="Fast API" />
 </picture></a> &nbsp;
 <a href="https://git-scm.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/git-colored.svg" alt="Git" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/git/F05032" alt="Git" />
 </picture></a> &nbsp;
 <a href="https://www.linux.org" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/linux-colored.svg" alt="Linux" />
-</picture></a> &nbsp;
-<a href="https://apple.com" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/macos-colored-dark.svg" alt="MacOS" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/linux/FCC624" alt="Linux" />
 </picture></a> &nbsp;
 <a href="https://www.tensorflow.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/tensorflow-colored.svg" alt="TensorFlow" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/tensorflow/FF6F00" alt="TensorFlow" />
 </picture></a> &nbsp;
 <a href="https://pytorch.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/pytorch-colored.svg" alt="PyTorch" />
-</picture></a> &nbsp;
-<a href="https://www.adobe.com/uk/products/photoshop.html" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/photoshop-colored.svg" alt="Photoshop" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/pytorch/EE4C2C" alt="PyTorch" />
 </picture></a> &nbsp;
 <a href="https://aws.amazon.com" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/aws-colored-dark.svg" alt="Amazon Web Services" />
+<img height="36" width="36" src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="Amazon Web Services" />
 </picture></a> &nbsp;
 <a href="https://www.docker.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/docker-colored.svg" alt="Docker" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker" />
 </picture></a> &nbsp;
 
 ### Social
 
 <a href="https://www.github.com/codekiln" target="_blank" rel="noreferrer">
 <picture>
-<img height="30" width="30" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/socials/github-dark.svg" alt="github" />
+<img height="30" width="30" src="https://cdn.simpleicons.org/github/black" alt="github" />
 </picture>
 </a> &nbsp;
 <a href="https://www.x.com/codekiln" target="_blank" rel="noreferrer">
 <picture>
-<img height="30" width="30" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/socials/twitter-dark.svg" alt="Twitter" />
+<img height="30" width="30" src="https://cdn.simpleicons.org/x/black" alt="X (Twitter)" />
 </picture>
 </a> &nbsp;
-<a href="https://www.linkedin.com/in/myernore" target="_blank" rel="noreferrer">
-<picture>
-<img height="30" width="30" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/socials/linkedin.svg" alt="linkedin" />
-</picture>
-</a> &nbsp;
+
 
 ### Badges
 #### My GitHub Stats
