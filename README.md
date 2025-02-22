@@ -15,13 +15,13 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 ### Skills
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/javascript-colored.svg" alt="JavaScript" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/javascript/F7DF1E" alt="JavaScript" />
 </picture></a> &nbsp;
 <a href="https://www.python.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/python-colored.svg" alt="Python" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/python/3776AB" alt="Python" />
 </picture></a> &nbsp;
 <a href="https://www.typescriptlang.org/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/typescript-colored.svg" alt="TypeScript" />
+<img height="36" width="36" src="https://cdn.simpleicons.org/typescript/3178C6" alt="TypeScript" />
 </picture></a> &nbsp;
 <a href="https://www.oracle.com/java/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://raw.githubusercontent.com/ShahVandit8/profile-x/refs/heads/main/public/icons/skills/java-colored.svg" alt="Java" />
