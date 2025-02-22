@@ -31,6 +31,9 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <a href="https://www.r-project.org/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/r/276DC3" alt="R" />
 </picture></a> &nbsp;
+<a href="https://www.scala-lang.org/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://cdn.simpleicons.org/scala/DC322F" alt="Scala" />
+</picture></a> &nbsp;
 <a href="https://vuejs.org/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/vuedotjs/4FC08D" alt="Vue" />
 </picture></a> &nbsp;
@@ -105,6 +108,9 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 </picture></a> &nbsp;
 <a href="https://www.ansible.com/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/ansible/EE0000" alt="Ansible" />
+</picture></a> &nbsp;
+<a href="https://reasonml.github.io/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://cdn.simpleicons.org/reason/FF5740" alt="ReasonML" />
 </picture></a> &nbsp;
 
 ### Social
