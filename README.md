@@ -1,6 +1,6 @@
 # Hello 👋 I am codekiln
 
-## Systems Architect, AI Engineer, [Cyborg](codekiln.github.io/logseq-encode-garden/)
+## Systems Architect, AI Engineer, [Cyborg](https://codekiln.github.io/logseq-encode-garden/)
 
 - 🌱 Right now I'm working with AI systems in LangGraph and using LangSmith for evals
 - 💬 Ask me about AI pedagogy, discursive reasoning, AI coding
