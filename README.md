@@ -100,6 +100,9 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <a href="https://www.docker.com/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker" />
 </picture></a> &nbsp;
+<a href="https://www.terraform.io/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://cdn.simpleicons.org/terraform/7B42BC" alt="Terraform" />
+</picture></a> &nbsp;
 
 ### Social
 
