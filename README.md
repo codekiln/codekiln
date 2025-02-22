@@ -112,6 +112,15 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <a href="https://reasonml.github.io/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/reason/FF5740" alt="ReasonML" />
 </picture></a> &nbsp;
+<a href="https://code.visualstudio.com/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://cdn.worldvectorlogo.com/logos/visual-studio-code-1.svg" alt="VS Code" />
+</picture></a> &nbsp;
+<a href="https://cursor.com/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://www.cursor.com/assets/videos/logo/placeholder-logo.webp" alt="Cursor" />
+</picture></a> &nbsp;
+<a href="https://www.jetbrains.com/pycharm/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://cdn.simpleicons.org/pycharm/000000" alt="PyCharm" />
+</picture></a> &nbsp;
 
 ### Social
 
