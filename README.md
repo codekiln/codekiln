@@ -1,4 +1,4 @@
-# Hello 👋 I am codekiln
+# hey there 👋, nice to meet you. I am `codekiln`
 
 ## Systems Architect, AI Engineer, [Cyborg](https://codekiln.github.io/logseq-encode-garden/)
 
