@@ -2,8 +2,7 @@
 
 ## Systems Architect, AI Engineer, [Cyborg](https://codekiln.github.io/logseq-encode-garden/)
 
-- 🌱 EdTech AI systems in LangGraph wi/ LangSmith for evals
-- 💬 let's talk - AI pedagogy, discursive reasoning, AI coding
+- 🌱 EdTech - AI pedagogy
 - 🎹 piano fun: - https://soundcloud.com/codekiln
 
 <a href="https://www.github.com/codekiln" target="_blank" rel="noreferrer"><img
@@ -87,6 +86,9 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 </picture></a> &nbsp;
 <a href="https://git-scm.com/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/git/F05032" alt="Git" />
+</picture></a> &nbsp;
+<a href="https://gitlab.com/" target="_blank" rel="noreferrer"><picture>
+<img height="36" width="36" src="https://cdn.simpleicons.org/gitlab/FC6D26" alt="GitLab" />
 </picture></a> &nbsp;
 <a href="https://www.linux.org" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/linux/FCC624" alt="Linux" />
