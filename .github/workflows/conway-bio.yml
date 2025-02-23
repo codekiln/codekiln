@@ -9,7 +9,7 @@ jobs:
   update-bio:
     runs-on: ubuntu-latest
     container:
-      image: tiangolo/uvicorn-gunicorn:python3.11-slim  # Comes with requests pre-installed
+      image: ghcr.io/${{ github.repository }}/conway-runner:latest
       
     steps:
     - uses: actions/checkout@v3
