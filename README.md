@@ -2,9 +2,10 @@
 
 ## Systems Architect, AI Engineer, [Cyborg](https://codekiln.github.io/logseq-encode-garden/)
 
-- 🌱 Right now I'm working with AI systems in LangGraph and using LangSmith for evals
-- 💬 Ask me about AI pedagogy, discursive reasoning, AI coding
-- ⚡ Fun fact about me: - https://soundcloud.com/codekiln
+- 🌱 EdTech AI systems in LangGraph wi/ LangSmith for evals
+- 💬 let's talk - AI pedagogy, discursive reasoning, AI coding
+- 🎹 piano: - https://soundcloud.com/codekiln
+- 🎛️ synth: https://nokokoan.bandcamp.com/
 
 <a href="https://www.github.com/codekiln" target="_blank" rel="noreferrer"><img
 src="https://img.shields.io/github/followers/codekiln?logo=github&style=for-the-badge&color=0891b2&labelColor=000000" /></a> &nbsp;
@@ -65,7 +66,7 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <img height="36" width="36" src="https://cdn.simpleicons.org/nodedotjs/339933" alt="NodeJS" />
 </picture></a> &nbsp;
 <a href="https://www.djangoproject.com/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://cdn.simpleicons.org/django/092E20" alt="Django" />
+<img height="36" width="36" src="https://static.djangoproject.com/img/logos/django-logo-negative.svg" alt="Django" />
 </picture></a> &nbsp;
 <a href="https://graphql.org/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/graphql/E10098" alt="GraphQL" />
@@ -98,7 +99,7 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <img height="36" width="36" src="https://cdn.simpleicons.org/pytorch/EE4C2C" alt="PyTorch" />
 </picture></a> &nbsp;
 <a href="https://aws.amazon.com" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://upload.wikimedia.org/wikipedia/commons/9/93/Amazon_Web_Services_Logo.svg" alt="Amazon Web Services" />
+<img height="36" width="36" src="https://d1.awsstatic.com/logos/aws-logo-lockups/poweredbyaws/PB_AWS_logo_RGB_stacked_REV_SQ.91cd4af40773cbfbd15577a3c2b8a346fe3e8fa2.png" alt="Amazon Web Services" />
 </picture></a> &nbsp;
 <a href="https://www.docker.com/" target="_blank" rel="noreferrer"><picture>
 <img height="36" width="36" src="https://cdn.simpleicons.org/docker/2496ED" alt="Docker" />
@@ -119,18 +120,22 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 <img height="36" width="36" src="https://www.cursor.com/assets/videos/logo/placeholder-logo.webp" alt="Cursor" />
 </picture></a> &nbsp;
 <a href="https://www.jetbrains.com/pycharm/" target="_blank" rel="noreferrer"><picture>
-<img height="36" width="36" src="https://cdn.simpleicons.org/pycharm/000000" alt="PyCharm" />
+<img height="36" width="36" src="https://resources.jetbrains.com/storage/products/company/brand/logos/PyCharm_icon.svg" alt="PyCharm" />
 </picture></a> &nbsp;
 
 ### Social
 
 <a href="https://www.github.com/codekiln" target="_blank" rel="noreferrer">
 <picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/github/white" />
+<source media="(prefers-color-scheme: light)" srcset="https://cdn.simpleicons.org/github/black" />
 <img height="30" width="30" src="https://cdn.simpleicons.org/github/black" alt="github" />
 </picture>
 </a> &nbsp;
 <a href="https://www.x.com/codekiln" target="_blank" rel="noreferrer">
 <picture>
+<source media="(prefers-color-scheme: dark)" srcset="https://cdn.simpleicons.org/x/white" />
+<source media="(prefers-color-scheme: light)" srcset="https://cdn.simpleicons.org/x/black" />
 <img height="30" width="30" src="https://cdn.simpleicons.org/x/black" alt="X (Twitter)" />
 </picture>
 </a> &nbsp;
@@ -148,8 +153,4 @@ src="https://streak-stats.demolab.com/?user=codekiln&stroke=ffffff&background=00
 <a href="http://www.github.com/codekiln"><img width="75%" src="https://github-readme-activity-graph.vercel.app/graph?username=codekiln&bg_color=000000&color=ffffff&line=0891b2&point=ffffff&area_color=000000&area=true&hide_border=true&custom_title=GitHub%20Commits%20Graph" /></a> <br/>
 <br/>
 <a href="https://github.com/codekiln" align="left"><img src="https://github-readme-stats.vercel.app/api/top-langs/?username=codekiln&langs_count=10&title_color=0891b2&text_color=ffffff&icon_color=0891b2&bg_color=000000&hide_border=true&locale=en&custom_title=Top%20%Languages" alt="Top Languages" /></a> <br/>
-
-#### Top Repositories
-
-<div><a style="margin-bottom: 10px" href="https://github.com/codekiln/logseq-encode-garden" ><img width="40%" src="https://github-readme-stats.vercel.app/api/pin/?username=codekiln&repo=logseq-encode-garden&title_color=0891b2&text_color=ffffff&icon_color=0891b2&bg_color=000000&hide_border=true&locale=en" /></a></div>
 
