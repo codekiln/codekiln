@@ -4,8 +4,7 @@
 
 - 🌱 EdTech AI systems in LangGraph wi/ LangSmith for evals
 - 💬 let's talk - AI pedagogy, discursive reasoning, AI coding
-- 🎹 piano: - https://soundcloud.com/codekiln
-- 🎛️ synth: https://nokokoan.bandcamp.com/
+- 🎹 piano fun: - https://soundcloud.com/codekiln
 
 <a href="https://www.github.com/codekiln" target="_blank" rel="noreferrer"><img
 src="https://img.shields.io/github/followers/codekiln?logo=github&style=for-the-badge&color=0891b2&labelColor=000000" /></a> &nbsp;
