@@ -1,0 +1,115 @@
+---
+description: Specification for the Current Task (Product Requirements Document or PRD)
+globs: 
+alwaysApply: false
+---
+# Developer Specification for `lifegame` Python Package
+
+## Project Context
+
+The original implementation in this repository is contained in the [conway-bio.py](mdc:conway-bio.py) script, which reads the GitHub bio to extract an 18×8 Conway’s Game of Life board, evolves it one step per run, and then updates the bio via the GitHub API. This script is integrated with GitHub Actions (see the workflows in `.github/workflows`) and uses environment variables for secure handling of credentials.
+
+The goal of this refactor is to add a new, modular Python package named `lifegame` to the repository. This package will encapsulate the game logic, support multiple rule variations and rendering modes, and provide a command-line interface (CLI) to simplify integration into CI/CD workflows (such as GitHub Actions). **This new package will complement the existing files (e.g., README.md, Dockerfile) rather than replacing them.**
+
+## Task Summary
+
+Refactor the existing codebase by developing a Python package (`lifegame`) that implements Conway's Game of Life with the following enhancements:
+
+- **Modularity:** Split the logic into clearly separated modules for game logic and command-line interaction.
+- **Multiple Rule Variations:** Support not only the standard Conway rules but also variants like Day & Night and HighLife.
+- **Advanced Rendering Modes:** Implement both full mode (using full block characters) and half mode (using half block characters to double vertical resolution).
+- **CLI Configuration:** Provide a flexible command-line interface that allows configuration of grid dimensions, simulation iterations, rule sets, display modes, and iteration delays.
+- **Testing and Robustness:** Include unit tests to cover oscillators, wraparound behavior, and rendering outputs.
+- **CI/CD Integration:** Ensure the package works within the existing CI setup (Dockerfile and GitHub Actions workflows) and handles GitHub API authentication securely via environment variables.
+
+## Functional Requirements
+
+- **Rule Sets:**
+  - **Standard:** Conway’s original rules (B3/S23).
+  - **Day & Night:** Rule variant (B3678/S34678).
+  - **HighLife:** Rule variant (B36/S23).
+- **Grid Behavior:**
+  - Use a toroidal (wraparound) grid to ensure edge cells have neighbors on the opposite side.
+  - Accept an initial grid state as a multi-line string, where alive cells are denoted by `█` or `1` and dead cells by space (` `) or `0`.
+- **Rendering Modes:**
+  - **Full Mode:** Each cell is rendered as a full block (`█` for alive, space for dead).
+  - **Half Mode:** Use half block characters:
+    - `▀` for top-half alive,
+    - `▄` for bottom-half alive,
+    - `█` for both halves alive,
+    - space for both dead.
+- **CLI Configuration:**
+  - Allow configuration of grid dimensions (`--width`, `--height`).
+  - Specify the number of iterations (`--iterations`) and the delay between iterations (`--delay`).
+  - Select the rule set (`--rules`) and display mode (`--display`).
+  - Accept an optional configuration dictionary for further customization.
+
+## Non-Functional Requirements
+
+- **Python Version:** Use Python 3.11 (as specified by the existing Dockerfile).
+- **Packaging:** Structure the new package using modern tooling with `pyproject.toml` for metadata and build configuration.
+- **Code Quality:** Ensure the code is clear, modular, well-documented, and maintains a uniform, monospaced grid suitable for GitHub bio rendering.
+- **Security:** Handle GitHub personal access tokens (PAT) securely via environment variables (using `python-dotenv` for local development and GitHub Actions secrets in CI).
+
+## Directory Structure
+
+The repository will now include a new package directory named `lifegame` alongside the existing files. The recommended structure for the new package is as follows:
+
+```
+/ (Repository Root)
+├── .ai-coding/
+├── .github/
+├── [conway-bio.py](mdc:conway-bio.py)
+├── Dockerfile
+├── LICENSE
+├── README.md
+├── requirements.txt
+└── lifegame/                 # New package directory
+    ├── pyproject.toml       # Package metadata and build configuration
+    ├── README.md            # Package-specific documentation (complementing the repository README)
+    ├── lifegame/
+    │   ├── __init__.py
+    │   ├── game.py        # Contains game logic and rendering functions
+    │   └── cli.py         # Implements the command-line interface using argparse
+    └── tests/
+        └── test_game.py   # Unit tests for game logic and rendering
+```
+
+## Components
+
+### Game Logic (`game.py`)
+
+- **Data Representation:** Store the grid as a 2D list of integers (0 for dead, 1 for alive).
+- **Key Methods:**
+  - `load_grid_from_string(grid_str)`: Parse a multi-line string to construct the grid.
+  - `get_neighbors(x, y)`: Count alive neighbors using modulo arithmetic for wraparound.
+  - `next_cell_state(x, y)`: Compute the next state of a cell based on the selected rule set.
+  - `step()`: Update the entire grid for the next iteration.
+  - `render_full()`: Return a string rendering using full block characters.
+  - `render_half()`: Return a string rendering using half block characters.
+
+### Command-Line Interface (`cli.py`)
+
+- **Argparse Integration:**
+  - Options for grid dimensions, iterations, rule set selection, rendering mode, and delay.
+  - Load an initial grid (from input or a default state) and iterate through the simulation, printing each updated state.
+- **Integration with CI:** The CLI should be easily callable from GitHub Actions (as a replacement or enhancement of the current [conway-bio.py](mdc:conway-bio.py) functionality).
+
+## Testing Plan
+
+### Unit Tests (using `pytest`)
+
+- **Oscillator Test:** Verify that known oscillators (e.g., a blinker) update correctly after each simulation step.
+- **Wraparound Test:** Ensure cells on opposite edges are correctly treated as neighbors.
+- **Rendering Test:** Validate that both `render_full()` and `render_half()` produce the expected string outputs for given grid states.
+
+### Execution
+
+- **Test Suite:** Run tests using `pytest` from the package or repository root.
+- **Coverage:** Aim for comprehensive coverage (at least 80%).
+
+### Continuous Integration
+
+- **CI Setup:** Leverage the existing GitHub Actions workflows (e.g., [conway-bio.yml](mdc:.github/workflows/conway-bio.yml) and [build-image.yml](mdc:.github/workflows/build-image.yml)) to run tests automatically on commits and pull requests.
+- **Docker Compatibility:** Ensure the package works within the Docker environment defined in the repository.
+
