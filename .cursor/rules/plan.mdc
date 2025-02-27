@@ -9,7 +9,9 @@ Below are nine prompts for guiding the AI to implement the project step-by-step.
 
 <IMPORTANT_INSTRUCTIONS_FOR_EACH_PROMPT>
 1. stop after every prompt
-2. create a commit using the Conventional Commits specification ending with a line `#1 increase resolution of life and package it up`
+2. mark off any items that are completed in [todo.md](mdc:.ai-coding/todo.md)
+3. do a scoped `git add`
+3. create a commit using the Conventional Commits specification ending with a line `#1 increase resolution of life and package it up`
 </IMPORTANT_INSTRUCTIONS_FOR_EACH_PROMPT>
 
 ## Prompt 1: Project Setup & Packaging
