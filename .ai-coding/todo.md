@@ -108,7 +108,26 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Include inline comments and sample output instructions.
 - [x] **Wiring:**  
 - Ensure both rendering functions work with the grid produced by previous functions.
-- [ ] **Commit:**  
+- [x] **Commit:**  
+- **Stop and create a commit** with a commit message ending with:  
+ ```
+ #1 increase resolution of life and package it up
+ ```
+
+---
+
+### Prompt 6: Writing Unit Tests for Game Logic
+- [x] **Test for `load_grid_from_string`:**  
+- Verify that a multi-line string is correctly converted into a 2D list.
+- [x] **Test for `get_neighbors`:**  
+- Check correct neighbor counting, including wraparound behavior.
+- [x] **Test for `next_cell_state` and `step`:**  
+- Use a known oscillator (such as a blinker) to verify that the grid evolves as expected.
+- [x] **Tests for Rendering Functions:**  
+- Validate that `render_full` and `render_half` produce the expected string outputs for a given grid.
+- [x] **Clear Assertions & Comments:**  
+- Include clear assertions and descriptive comments in your tests.
+- [x] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
  #1 increase resolution of life and package it up
