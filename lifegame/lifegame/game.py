@@ -122,29 +122,6 @@ def get_neighbors(x, y, grid):
     return count
 
 
-# Example usage and testing
-if __name__ == "__main__":
-    # Example grid: a blinker oscillator
-    grid_str = """
-    010
-    010
-    010
-    """
-
-    # Parse the grid
-    grid = load_grid_from_string(grid_str)
-    print("Parsed grid:")
-    for row in grid:
-        print(row)
-
-    # Test neighbor counting
-    print("\nNeighbor counts:")
-    for y in range(len(grid)):
-        for x in range(len(grid[0])):
-            neighbors = get_neighbors(x, y, grid)
-            print(f"Cell ({x}, {y}): {neighbors} neighbors")
-
-
 def next_cell_state(x, y, grid, rule_set="standard"):
     """
     Determine the next state of a cell based on its current state and neighbors.
@@ -161,10 +138,55 @@ def next_cell_state(x, y, grid, rule_set="standard"):
     Returns:
         int: The next state of the cell (0 for dead, 1 for alive)
     """
-    # TODO: Get current cell state and neighbor count
-    # TODO: Implement standard Conway rules (B3/S23)
-    # TODO: Add framework for Day & Night and HighLife variants
-    pass
+    # Validate rule_set
+    valid_rule_sets = ["standard", "daynight", "highlife"]
+    if rule_set not in valid_rule_sets:
+        raise ValueError(
+            f"Invalid rule set: {rule_set}. Expected one of {valid_rule_sets}"
+        )
+
+    # Get current cell state
+    current_state = grid[y][x]
+
+    # Count alive neighbors
+    neighbor_count = get_neighbors(x, y, grid)
+
+    # Apply rules based on the selected rule set
+    if rule_set == "standard":
+        # Conway's original rules (B3/S23)
+        # B3: Birth if exactly 3 neighbors
+        # S23: Survival if 2 or 3 neighbors
+        if current_state == 1:  # Cell is alive
+            # Survival rule: cell stays alive if it has 2 or 3 neighbors
+            return 1 if neighbor_count in [2, 3] else 0
+        else:  # Cell is dead
+            # Birth rule: cell becomes alive if it has exactly 3 neighbors
+            return 1 if neighbor_count == 3 else 0
+
+    elif rule_set == "daynight":
+        # Day & Night rules (B3678/S34678)
+        # B3678: Birth if 3, 6, 7, or 8 neighbors
+        # S34678: Survival if 3, 4, 6, 7, or 8 neighbors
+        if current_state == 1:  # Cell is alive
+            # Survival rule
+            return 1 if neighbor_count in [3, 4, 6, 7, 8] else 0
+        else:  # Cell is dead
+            # Birth rule
+            return 1 if neighbor_count in [3, 6, 7, 8] else 0
+
+    elif rule_set == "highlife":
+        # HighLife rules (B36/S23)
+        # B36: Birth if 3 or 6 neighbors
+        # S23: Survival if 2 or 3 neighbors
+        if current_state == 1:  # Cell is alive
+            # Survival rule
+            return 1 if neighbor_count in [2, 3] else 0
+        else:  # Cell is dead
+            # Birth rule
+            return 1 if neighbor_count in [3, 6] else 0
+
+    # This should never be reached due to the validation at the beginning
+    return current_state
 
 
 def step(grid, rule_set="standard"):
@@ -178,10 +200,77 @@ def step(grid, rule_set="standard"):
     Returns:
         list: A new 2D list representing the next grid state
     """
-    # TODO: Create a new grid to avoid modifying the input grid during iteration
-    # TODO: Apply next_cell_state to each cell in the grid
-    # TODO: Return the new grid
-    pass
+    # Validate input
+    if not grid or not grid[0]:
+        raise ValueError("Grid cannot be empty")
+
+    # Get grid dimensions
+    height = len(grid)
+    width = len(grid[0])
+
+    # Create a new grid to avoid modifying the input grid during iteration
+    new_grid = []
+
+    # Apply next_cell_state to each cell in the grid
+    for y in range(height):
+        new_row = []
+        for x in range(width):
+            new_row.append(next_cell_state(x, y, grid, rule_set))
+        new_grid.append(new_row)
+
+    return new_grid
+
+
+# Example usage and testing
+if __name__ == "__main__":
+    # Example grid: a blinker oscillator
+    grid_str = """
+    010
+    010
+    010
+    """
+
+    # Parse the grid
+    grid = load_grid_from_string(grid_str)
+    print("Initial grid (blinker - vertical):")
+    for row in grid:
+        print(row)
+
+    # Evolve the grid one step
+    next_grid = step(grid)
+    print("\nAfter one step (blinker - horizontal):")
+    for row in next_grid:
+        print(row)
+
+    # Evolve again to complete the oscillation
+    final_grid = step(next_grid)
+    print("\nAfter two steps (blinker - vertical again):")
+    for row in final_grid:
+        print(row)
+
+    # Test with different rule sets
+    print("\nTesting different rule sets:")
+
+    # Create a simple grid
+    test_grid = [[0, 1, 0], [0, 1, 0], [0, 1, 0]]
+
+    # Test standard rules
+    standard_next = step(test_grid, "standard")
+    print("\nStandard rules (B3/S23):")
+    for row in standard_next:
+        print(row)
+
+    # Test Day & Night rules
+    daynight_next = step(test_grid, "daynight")
+    print("\nDay & Night rules (B3678/S34678):")
+    for row in daynight_next:
+        print(row)
+
+    # Test HighLife rules
+    highlife_next = step(test_grid, "highlife")
+    print("\nHighLife rules (B36/S23):")
+    for row in highlife_next:
+        print(row)
 
 
 def render_full(grid):

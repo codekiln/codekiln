@@ -65,7 +65,7 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Add minimal tests (or instructions in comments) on how to verify the output (e.g., by calling `load_grid_from_string` with a sample grid and printing neighbor counts).
 - [x] **Wiring:**  
 - Wire these functions together by demonstrating a sample function call.
-- [ ] **Commit:**  
+- [x] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
  #1 increase resolution of life and package it up
@@ -74,17 +74,17 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 ---
 
 ### Prompt 4: Implement Next Cell State and Step Functions
-- [ ] **Implement `next_cell_state`:**  
+- [x] **Implement `next_cell_state`:**  
 - Calculate the next state (0 or 1) for the cell at (x, y) using:
  - The current state,
  - The neighbor count (using `get_neighbors`),
  - The selected rule set.
 - Fully implement the standard Conway rules (B3/S23) and include a framework (using comments or conditionals) for adding Day & Night and HighLife variants.
-- [ ] **Implement `step`:**  
+- [x] **Implement `step`:**  
 - Create a new grid by applying `next_cell_state` to each cell in the current grid and return the new grid.
-- [ ] **Testing Instructions:**  
+- [x] **Testing Instructions:**  
 - Add comments or instructions on how to test these functions (e.g., using a known oscillator such as a blinker).
-- [ ] **Wiring:**  
+- [x] **Wiring:**  
 - Wire these functions together to evolve a sample grid by one iteration.
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
