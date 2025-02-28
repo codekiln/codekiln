@@ -2,7 +2,7 @@
 name = "lifegame"
 version = "0.1.0"
 description = "A Python package implementing Conway's Game of Life with multiple rule variations and rendering modes"
-authors = ["Your Name <your.email@example.com>"]
+authors = ["codekiln <codekiln@pm.me>"]
 readme = "README.md"
 packages = [{include = "lifegame"}]
 

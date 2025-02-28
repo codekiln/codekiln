@@ -132,3 +132,27 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
  ```
  #1 increase resolution of life and package it up
  ```
+
+---
+
+### Prompt 7: Implementing the Command-Line Interface (CLI)
+- [x] **Define Command-Line Options:**  
+- Implement command-line options using `argparse` for:
+  - `--width` and `--height` for grid dimensions
+  - `--iterations` for the number of simulation steps
+  - `--delay` for the delay between iterations
+  - `--rules` to select the rule set (e.g., "standard", "daynight", "highlife")
+  - `--display` to select the rendering mode ("full" or "half")
+- [x] **Load Initial Grid:**  
+- Implement functionality to load an initial grid from a default multi-line string or an optional input file
+- [x] **Simulation Loop:**  
+- Use the game logic functions (`load_grid_from_string`, `step`, `render_full`, `render_half`) to run the simulation in a loop
+- [x] **Display Grid:**  
+- Print the grid after each iteration (and optionally pause based on `--delay`)
+- [x] **Wiring:**  
+- Ensure that the CLI "wires" the game logic together, so that running the script results in a complete simulation cycle
+- [ ] **Commit:**  
+- **Stop and create a commit** with a commit message ending with:  
+ ```
+ #1 increase resolution of life and package it up
+ ```
