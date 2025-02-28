@@ -11,6 +11,16 @@ The grid is implemented as a toroidal (wraparound) 2D space where cells on oppos
 edges are considered neighbors.
 """
 
+# Export key functions
+__all__ = [
+    "load_grid_from_string",
+    "get_neighbors",
+    "next_cell_state",
+    "step",
+    "render_full",
+    "render_half",
+]
+
 
 def load_grid_from_string(grid_str):
     """

@@ -160,15 +160,15 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 ---
 
 ### Prompt 8: Wiring the Package Together
-- [ ] **Finalize CLI Integration:**  
+- [x] **Finalize CLI Integration:**  
 - In `lifegame/lifegame/cli.py`, ensure the `main()` function properly parses command-line arguments and calls the simulation loop
-- [ ] **Update Package Initialization:**  
+- [x] **Update Package Initialization:**  
 - Update `lifegame/__init__.py` if necessary to expose key functions
-- [ ] **Configure Entry Points:**  
+- [x] **Configure Entry Points:**  
 - Modify `pyproject.toml` to add a `console_scripts` entry point so that the CLI can be invoked directly (e.g., via the command "lifegame-run")
-- [ ] **Ensure Module Integration:**  
+- [x] **Ensure Module Integration:**  
 - Ensure that all modules (`game.py` and `cli.py`) are properly imported and that no code is orphaned
-- [ ] **Update Documentation:**  
+- [x] **Update Documentation:**  
 - Add a brief usage section at the top of `lifegame/README.md` explaining how to run the CLI and run tests
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
