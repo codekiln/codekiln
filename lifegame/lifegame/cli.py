@@ -27,11 +27,15 @@ from lifegame.game import (
 
 def clear_screen():
     """Clear the terminal screen."""
-    # Use the appropriate command based on the operating system
-    os.system("cls" if os.name == "nt" else "clear")
+    try:
+        # Use the appropriate command based on the operating system
+        os.system("cls" if os.name == "nt" else "clear")
+    except Exception:
+        # Fallback if clearing the screen fails
+        print("\n" * 100)  # Print newlines as a simple alternative
 
 
-def run_simulation(grid, iterations, delay, rule_set, display_mode):
+def run_simulation(grid, iterations, delay, rule_set, display_mode, no_clear=False):
     """
     Run the Game of Life simulation for the specified number of iterations.
 
@@ -41,29 +45,48 @@ def run_simulation(grid, iterations, delay, rule_set, display_mode):
         delay (float): Delay between iterations in seconds
         rule_set (str): Rule set to use (standard, daynight, highlife)
         display_mode (str): Display mode to use (full or half)
+        no_clear (bool): If True, don't clear the screen between iterations
     """
     # Select the appropriate rendering function based on display mode
     render_func = render_full if display_mode == "full" else render_half
 
     # Display the initial grid
-    clear_screen()
+    if not no_clear:
+        clear_screen()
     print(f"Initial grid (Rule set: {rule_set}, Display mode: {display_mode}):")
     print(render_func(grid))
 
+    # Wait for a moment to show the initial grid
+    try:
+        time.sleep(delay)
+    except KeyboardInterrupt:
+        print("\nSimulation interrupted by user.")
+        return
+
     # Run the simulation for the specified number of iterations
     for i in range(iterations):
-        # Wait for the specified delay
-        time.sleep(delay)
-
         # Evolve the grid one step
         grid = step(grid, rule_set)
 
         # Display the updated grid
-        clear_screen()
+        if not no_clear:
+            clear_screen()
+        else:
+            print("\n" + "-" * 40)  # Print a separator line
+
         print(
-            f"Iteration {i+1}/{iterations} (Rule set: {rule_set}, Display mode: {display_mode}):"
+            f"Iteration {i + 1}/{iterations} (Rule set: {rule_set}, Display mode: {display_mode}):"
         )
         print(render_func(grid))
+
+        # Wait for the specified delay
+        try:
+            time.sleep(delay)
+        except KeyboardInterrupt:
+            print("\nSimulation interrupted by user.")
+            break
+
+    print("\nSimulation complete.")
 
 
 def load_grid_from_file(file_path):
@@ -169,6 +192,11 @@ def main():
     parser.add_argument(
         "--random", action="store_true", help="Generate a random initial grid"
     )
+    parser.add_argument(
+        "--no-clear",
+        action="store_true",
+        help="Don't clear the screen between iterations (better for Docker/CI environments)",
+    )
 
     # Parse the command-line arguments
     args = parser.parse_args()
@@ -211,6 +239,7 @@ def main():
         delay=args.delay,
         rule_set=args.rules,
         display_mode=args.display,
+        no_clear=args.no_clear,
     )
 
 

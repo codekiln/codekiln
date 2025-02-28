@@ -13,6 +13,16 @@ WORKDIR /app/lifegame
 RUN poetry build && \
     pip install dist/*.whl
 
+# Create patterns directory with a sample pattern
+RUN mkdir -p /app/patterns
+RUN echo "000\n010\n001\n111" > /app/patterns/glider.txt
+
+# Set the working directory for running commands
+WORKDIR /app
+
+# Set environment variables
+ENV TERM=xterm-256color
+
 # Set the entrypoint to the lifegame-run command
 ENTRYPOINT ["lifegame-run"]
-CMD ["--help"] 
+CMD ["--input", "/app/patterns/glider.txt", "--iterations", "50", "--no-clear"] 

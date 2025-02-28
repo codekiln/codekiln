@@ -37,6 +37,7 @@ lifegame-run --width 20 --height 10 --iterations 50 --delay 0.2 --rules standard
 - `--display`: Display mode to use (choices: full, half; default: full)
 - `--input`: Path to a file containing the initial grid
 - `--random`: Generate a random initial grid
+- `--no-clear`: Don't clear the screen between iterations (better for Docker/CI environments)
 
 For help and all available options:
 
@@ -145,8 +146,11 @@ A Docker image is available for running the lifegame package:
 # Build the Docker image
 docker build -f Dockerfile.lifegame -t lifegame .
 
-# Run the lifegame CLI with Docker
-docker run lifegame --width 30 --height 15 --iterations 100 --rules highlife
+# Run the lifegame CLI with Docker (using the included pattern)
+docker run lifegame
+
+# Run with specific options
+docker run lifegame --width 30 --height 15 --iterations 100 --rules highlife --random
 
 # Run with a specific pattern (mount a volume to access local files)
 docker run -v $(pwd)/patterns:/patterns lifegame --input /patterns/glider.txt
