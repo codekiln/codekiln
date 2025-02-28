@@ -151,6 +151,25 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Print the grid after each iteration (and optionally pause based on `--delay`)
 - [x] **Wiring:**  
 - Ensure that the CLI "wires" the game logic together, so that running the script results in a complete simulation cycle
+- [x] **Commit:**  
+- **Stop and create a commit** with a commit message ending with:  
+ ```
+ #1 increase resolution of life and package it up
+ ```
+
+---
+
+### Prompt 8: Wiring the Package Together
+- [ ] **Finalize CLI Integration:**  
+- In `lifegame/lifegame/cli.py`, ensure the `main()` function properly parses command-line arguments and calls the simulation loop
+- [ ] **Update Package Initialization:**  
+- Update `lifegame/__init__.py` if necessary to expose key functions
+- [ ] **Configure Entry Points:**  
+- Modify `pyproject.toml` to add a `console_scripts` entry point so that the CLI can be invoked directly (e.g., via the command "lifegame-run")
+- [ ] **Ensure Module Integration:**  
+- Ensure that all modules (`game.py` and `cli.py`) are properly imported and that no code is orphaned
+- [ ] **Update Documentation:**  
+- Add a brief usage section at the top of `lifegame/README.md` explaining how to run the CLI and run tests
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
