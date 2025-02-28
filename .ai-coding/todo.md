@@ -170,6 +170,25 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Ensure that all modules (`game.py` and `cli.py`) are properly imported and that no code is orphaned
 - [x] **Update Documentation:**  
 - Add a brief usage section at the top of `lifegame/README.md` explaining how to run the CLI and run tests
+- [x] **Commit:**  
+- **Stop and create a commit** with a commit message ending with:  
+ ```
+ #1 increase resolution of life and package it up
+ ```
+
+---
+
+### Prompt 9: CI/CD Integration and Final Testing
+- [ ] **Run Unit Tests:**  
+- Ensure that all unit tests in `lifegame/tests/test_game.py` and `lifegame/tests/test_package.py` run correctly using pytest
+- [ ] **GitHub Actions Workflow:**  
+- Update the GitHub Actions workflow (if needed) to include a step that installs the package and runs the tests
+- [ ] **Docker Integration:**  
+- Verify that the package works inside the Dockerfile environment
+- [ ] **Documentation Updates:**  
+- Add instructions in the package README on how to run tests locally and in CI
+- [ ] **Environment Variables:**  
+- Confirm that all environment variable handling (for example, using python-dotenv for local development) is documented
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
