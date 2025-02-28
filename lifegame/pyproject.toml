@@ -1,0 +1,20 @@
+[tool.poetry]
+name = "lifegame"
+version = "0.1.0"
+description = "A Python package implementing Conway's Game of Life with multiple rule variations and rendering modes"
+authors = ["Your Name <your.email@example.com>"]
+readme = "README.md"
+packages = [{include = "lifegame"}]
+
+[tool.poetry.dependencies]
+python = "^3.11"
+
+[tool.poetry.group.dev.dependencies]
+pytest = "^7.0.0"
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+lifegame-run = "lifegame.cli:main" 

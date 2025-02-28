@@ -6,7 +6,7 @@ This checklist is designed to guide the step-by-step implementation of the lifeg
 ## Checklist Items
 
 ### Prompt 1: Project Setup & Packaging
-- [ ] **Directory Structure:**  
+- [x] **Directory Structure:**  
 - Create the following structure:
  ```
  /
@@ -20,10 +20,10 @@ This checklist is designed to guide the step-by-step implementation of the lifeg
  │   └── tests/
  │       └── test_game.py      # Placeholder for unit tests
  ```
-- [ ] **Placeholder Content:**  
+- [x] **Placeholder Content:**  
 - Add minimal content in `pyproject.toml` (e.g., project name, version, description).
 - Add basic module-level docstrings in `game.py` and `cli.py`.
-- [ ] **Wiring:**  
+- [x] **Wiring:**  
 - Ensure that every file is properly created and "wired" together (no orphaned code).
 - [ ] **Commit:**  
 - **Stop and create a commit** using the Conventional Commits specification ending with:  
@@ -111,92 +111,3 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 6: Writing Unit Tests for Game Logic
-- [ ] **Test for `load_grid_from_string`:**  
-- Verify that a multi-line string is correctly converted into a 2D list.
-- [ ] **Test for `get_neighbors`:**  
-- Check correct neighbor counting, including wraparound behavior.
-- [ ] **Test for `next_cell_state` and `step`:**  
-- Use a known oscillator (e.g., a blinker) to verify that the grid evolves as expected.
-- [ ] **Tests for Rendering Functions:**  
-- Validate that `render_full` and `render_half` produce the expected string outputs for a given grid.
-- [ ] **Clear Assertions & Comments:**  
-- Include clear assertions and descriptive comments in your tests.
-- [ ] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 7: CLI Implementation
-- [ ] **Update `cli.py`:**  
-- Implement a command-line interface using argparse with the following options:
- - `--width` and `--height` for grid dimensions.
- - `--iterations` for the number of simulation steps.
- - `--delay` for the delay between iterations.
- - `--rules` to select the rule set (e.g., "standard", "daynight", "highlife").
- - `--display` to select the rendering mode ("full" or "half").
-- [ ] **Load Initial Grid:**  
-- Load an initial grid from a default multi-line string or an optional input file.
-- [ ] **Integrate Game Logic:**  
-- Use the game logic functions (`load_grid_from_string`, `step`, `render_full`, `render_half`) to run the simulation in a loop.
-- [ ] **Output:**  
-- Print the grid after each iteration, optionally pausing based on the `--delay` option.
-- [ ] **Wiring:**  
-- Ensure the CLI wires together all components for a complete simulation cycle.
-- [ ] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 8: Integration and Entry Point
-- [ ] **Finalize Integration:**  
-- Add a `main()` function in `lifegame/lifegame/cli.py` that:
- - Parses command-line arguments.
- - Calls the simulation loop.
-- [ ] **Update `__init__.py`:**  
-- Expose key functions if necessary.
-- [ ] **Entry Point Setup:**  
-- Modify `pyproject.toml` (or add a console_scripts entry point) so that the CLI can be invoked directly (e.g., via the command "lifegame-run").
-- [ ] **Ensure Proper Imports:**  
-- Confirm that all modules are properly imported and no code is orphaned.
-- [ ] **Usage Documentation:**  
-- Add a brief usage section at the top of `lifegame/README.md` explaining how to run the CLI and tests.
-- [ ] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 9: CI/CD Integration and Final Testing
-- [ ] **Run Unit Tests:**  
-- Ensure that the tests in `lifegame/tests/test_game.py` run correctly using pytest.
-- [ ] **Update GitHub Actions Workflow:**  
-- Modify the workflow (if needed) to install the package and run tests automatically.
-- [ ] **Docker Compatibility:**  
-- Verify that the package works in the Dockerfile environment.
-- [ ] **Documentation:**  
-- Add instructions in the package README on how to run tests locally and in CI.
-- [ ] **Environment Variable Handling:**  
-- Confirm that the handling of environment variables (e.g., via python-dotenv for local development) is documented.
-- [ ] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-Follow this checklist sequentially, ensuring each step is completed and committed before moving on. This approach guarantees incremental progress and robust testing throughout the development process.
