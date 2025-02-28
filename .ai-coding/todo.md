@@ -25,7 +25,7 @@ This checklist is designed to guide the step-by-step implementation of the lifeg
 - Add basic module-level docstrings in `game.py` and `cli.py`.
 - [x] **Wiring:**  
 - Ensure that every file is properly created and "wired" together (no orphaned code).
-- [ ] **Commit:**  
+- [x] **Commit:**  
 - **Stop and create a commit** using the Conventional Commits specification ending with:  
  ```
  #1 increase resolution of life and package it up
@@ -34,7 +34,7 @@ This checklist is designed to guide the step-by-step implementation of the lifeg
 ---
 
 ### Prompt 2: Game Logic – Skeleton Functions
-- [ ] **Skeleton Functions in `game.py`:**  
+- [x] **Skeleton Functions in `game.py`:**  
 In `lifegame/lifegame/game.py`, create the following function stubs with proper docstrings and inline "TODO" comments:
 - `load_grid_from_string(grid_str)`
 - `get_neighbors(x, y, grid)`
@@ -42,9 +42,9 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - `step(grid, rule_set)`
 - `render_full(grid)`
 - `render_half(grid)`
-- [ ] **Module-Level Docstring:**  
+- [x] **Module-Level Docstring:**  
 - Ensure the file starts with a clear module-level docstring explaining its purpose.
-- [ ] **Wiring:**  
+- [x] **Wiring:**  
 - Confirm that all skeleton functions are included in the module.
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
