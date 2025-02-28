@@ -189,7 +189,7 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Add instructions in the package README on how to run tests locally and in CI
 - [x] **Environment Variables:**  
 - Confirm that all environment variable handling (for example, using python-dotenv for local development) is documented
-- [ ] **Commit:**  
+- [x] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
  #1 increase resolution of life and package it up
