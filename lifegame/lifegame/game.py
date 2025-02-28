@@ -29,10 +29,48 @@ def load_grid_from_string(grid_str):
         >>> load_grid_from_string(grid_str)
         [[1, 0, 1], [0, 1, 1], [1, 0, 1]]
     """
-    # TODO: Implement parsing of grid string into 2D list
-    # TODO: Handle both "1"/"0" and "█"/" " representations
-    # TODO: Validate input (non-empty, rectangular grid)
-    pass
+    # Validate input
+    if not grid_str:
+        raise ValueError("Grid string cannot be empty")
+
+    # Split the string into lines
+    lines = grid_str.strip().split("\n")
+
+    # Check if there are any lines
+    if not lines:
+        raise ValueError("Grid must have at least one row")
+
+    # Initialize the grid
+    grid = []
+
+    # Get the width from the first line to ensure rectangular grid
+    expected_width = len(lines[0])
+
+    # Process each line
+    for line_idx, line in enumerate(lines):
+        # Check if the line has the expected width
+        if len(line) != expected_width:
+            raise ValueError(
+                f"Line {line_idx + 1} has inconsistent width: expected {expected_width}, got {len(line)}"
+            )
+
+        # Process each character in the line
+        row = []
+        for char in line:
+            # Convert character to cell state (0 or 1)
+            if char in ["1", "█"]:
+                row.append(1)  # Alive cell
+            elif char in ["0", " "]:
+                row.append(0)  # Dead cell
+            else:
+                raise ValueError(
+                    f"Invalid character '{char}' at line {line_idx + 1}. Expected '1', '█', '0', or space."
+                )
+
+        # Add the row to the grid
+        grid.append(row)
+
+    return grid
 
 
 def get_neighbors(x, y, grid):
@@ -50,9 +88,61 @@ def get_neighbors(x, y, grid):
     Returns:
         int: Number of alive neighbors (0-8)
     """
-    # TODO: Implement neighbor counting with wraparound using modulo arithmetic
-    # TODO: Check all 8 surrounding positions
-    pass
+    # Validate input
+    if not grid or not grid[0]:
+        raise ValueError("Grid cannot be empty")
+
+    # Get grid dimensions
+    height = len(grid)
+    width = len(grid[0])
+
+    # Validate coordinates
+    if not (0 <= x < width) or not (0 <= y < height):
+        raise ValueError(
+            f"Coordinates ({x}, {y}) out of bounds for grid of size {width}x{height}"
+        )
+
+    # Initialize neighbor count
+    count = 0
+
+    # Check all 8 surrounding positions
+    for dy in [-1, 0, 1]:
+        for dx in [-1, 0, 1]:
+            # Skip the cell itself
+            if dx == 0 and dy == 0:
+                continue
+
+            # Calculate neighbor coordinates with wraparound
+            nx = (x + dx) % width
+            ny = (y + dy) % height
+
+            # Add the neighbor's state to the count
+            count += grid[ny][nx]
+
+    return count
+
+
+# Example usage and testing
+if __name__ == "__main__":
+    # Example grid: a blinker oscillator
+    grid_str = """
+    010
+    010
+    010
+    """
+
+    # Parse the grid
+    grid = load_grid_from_string(grid_str)
+    print("Parsed grid:")
+    for row in grid:
+        print(row)
+
+    # Test neighbor counting
+    print("\nNeighbor counts:")
+    for y in range(len(grid)):
+        for x in range(len(grid[0])):
+            neighbors = get_neighbors(x, y, grid)
+            print(f"Cell ({x}, {y}): {neighbors} neighbors")
 
 
 def next_cell_state(x, y, grid, rule_set="standard"):

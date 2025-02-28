@@ -46,7 +46,7 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Ensure the file starts with a clear module-level docstring explaining its purpose.
 - [x] **Wiring:**  
 - Confirm that all skeleton functions are included in the module.
-- [ ] **Commit:**  
+- [x] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
  #1 increase resolution of life and package it up
@@ -55,15 +55,15 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 ---
 
 ### Prompt 3: Implement Grid Parsing and Neighbor Counting
-- [ ] **Implement `load_grid_from_string`:**  
+- [x] **Implement `load_grid_from_string`:**  
 - Parse a multi-line string where alive cells are represented by `"1"` or `"█"` and dead cells by `"0"` or a space into a 2D list of integers (1 for alive, 0 for dead).
-- [ ] **Implement `get_neighbors`:**  
+- [x] **Implement `get_neighbors`:**  
 - Count the number of alive neighbors for the cell at (x, y) using modulo arithmetic to handle the wraparound (toroidal grid).
-- [ ] **Inline Comments & Error Checking:**  
+- [x] **Inline Comments & Error Checking:**  
 - Include inline comments and basic error checking.
-- [ ] **Testing Instructions:**  
+- [x] **Testing Instructions:**  
 - Add minimal tests (or instructions in comments) on how to verify the output (e.g., by calling `load_grid_from_string` with a sample grid and printing neighbor counts).
-- [ ] **Wiring:**  
+- [x] **Wiring:**  
 - Wire these functions together by demonstrating a sample function call.
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
