@@ -86,7 +86,7 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 - Add comments or instructions on how to test these functions (e.g., using a known oscillator such as a blinker).
 - [x] **Wiring:**  
 - Wire these functions together to evolve a sample grid by one iteration.
-- [ ] **Commit:**  
+- [x] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
  #1 increase resolution of life and package it up
@@ -95,19 +95,21 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 ---
 
 ### Prompt 5: Implement Rendering Functions
-- [ ] **Implement `render_full`:**  
+- [x] **Implement `render_full`:**  
 - Return a string representation of the grid where alive cells are rendered as the full block character (e.g., `"█"`) and dead cells as a space.
-- [ ] **Implement `render_half`:**  
+- [x] **Implement `render_half`:**  
 - Implement a rendering function using half block characters. For example:
  - `"▀"` for a cell that is only top-half alive,
  - `"▄"` for only bottom-half alive,
  - `"█"` for fully alive,
  - Space for dead.
 - (A simple mapping is acceptable for now; it can be refined later.)
-- [ ] **Inline Comments & Output Samples:**  
+- [x] **Inline Comments & Output Samples:**  
 - Include inline comments and sample output instructions.
-- [ ] **Wiring:**  
+- [x] **Wiring:**  
 - Ensure both rendering functions work with the grid produced by previous functions.
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
+ ```
+ #1 increase resolution of life and package it up
  ```

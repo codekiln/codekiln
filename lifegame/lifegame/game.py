@@ -221,6 +221,112 @@ def step(grid, rule_set="standard"):
     return new_grid
 
 
+def render_full(grid):
+    """
+    Render the grid using full block characters.
+
+    Args:
+        grid (list): 2D list representing the current grid state
+
+    Returns:
+        str: A string representation of the grid where:
+            - Alive cells are rendered as "█"
+            - Dead cells are rendered as space
+
+    Example:
+        >>> grid = [[0, 1, 0], [0, 1, 0], [0, 1, 0]]
+        >>> print(render_full(grid))
+        ' █ '
+        ' █ '
+        ' █ '
+    """
+    # Validate input
+    if not grid:
+        raise ValueError("Grid cannot be empty")
+
+    # Initialize the result string
+    result = []
+
+    # Process each row in the grid
+    for row in grid:
+        # Convert each cell in the row to its character representation
+        rendered_row = ""
+        for cell in row:
+            if cell == 1:
+                rendered_row += "█"  # Alive cell
+            else:
+                rendered_row += " "  # Dead cell
+
+        # Add the rendered row to the result
+        result.append(rendered_row)
+
+    # Join all rows with newlines to create the final string
+    return "\n".join(result)
+
+
+def render_half(grid):
+    """
+    Render the grid using half block characters for increased vertical resolution.
+
+    This rendering mode combines pairs of vertically adjacent cells into a single
+    character, effectively doubling the vertical resolution.
+
+    Args:
+        grid (list): 2D list representing the current grid state
+
+    Returns:
+        str: A string representation of the grid where:
+            - "▀" represents a cell where only the top half is alive
+            - "▄" represents a cell where only the bottom half is alive
+            - "█" represents a cell where both halves are alive
+            - Space represents a cell where both halves are dead
+
+    Example:
+        >>> grid = [[0, 1, 0], [0, 0, 0], [0, 1, 0], [0, 0, 0]]
+        >>> print(render_half(grid))
+        ' ▀ '
+        ' ▀ '
+    """
+    # Validate input
+    if not grid:
+        raise ValueError("Grid cannot be empty")
+
+    # Get grid dimensions
+    height = len(grid)
+    width = len(grid[0])
+
+    # Initialize the result string
+    result = []
+
+    # Process pairs of rows
+    for y in range(0, height, 2):
+        rendered_row = ""
+
+        # Handle each column
+        for x in range(width):
+            # Get the top cell state
+            top = grid[y][x]
+
+            # Get the bottom cell state (if it exists)
+            bottom = grid[y + 1][x] if y + 1 < height else 0
+
+            # Determine the character based on the combined states
+            if top == 1 and bottom == 1:
+                rendered_row += "█"  # Both halves alive
+            elif top == 1 and bottom == 0:
+                rendered_row += "▀"  # Top half alive
+            elif top == 0 and bottom == 1:
+                rendered_row += "▄"  # Bottom half alive
+            else:  # top == 0 and bottom == 0
+                rendered_row += " "  # Both halves dead
+
+        # Add the rendered row to the result
+        result.append(rendered_row)
+
+    # Join all rows with newlines to create the final string
+    return "\n".join(result)
+
+
 # Example usage and testing
 if __name__ == "__main__":
     # Example grid: a blinker oscillator
@@ -272,43 +378,33 @@ if __name__ == "__main__":
     for row in highlife_next:
         print(row)
 
+    # Test rendering functions
+    print("\nTesting rendering functions:")
 
-def render_full(grid):
-    """
-    Render the grid using full block characters.
+    # Create a test grid for rendering
+    render_test_grid = [
+        [0, 1, 0, 1, 0],
+        [1, 0, 1, 0, 1],
+        [0, 1, 0, 1, 0],
+        [1, 0, 1, 0, 1],
+    ]
 
-    Args:
-        grid (list): 2D list representing the current grid state
+    # Test full rendering
+    print("\nFull rendering:")
+    full_rendered = render_full(render_test_grid)
+    print(full_rendered)
 
-    Returns:
-        str: A string representation of the grid where:
-            - Alive cells are rendered as "█"
-            - Dead cells are rendered as space
-    """
-    # TODO: Convert the 2D grid to a string representation
-    # TODO: Use "█" for alive cells and space for dead cells
-    # TODO: Join rows with newlines
-    pass
+    # Test half rendering
+    print("\nHalf rendering:")
+    half_rendered = render_half(render_test_grid)
+    print(half_rendered)
 
+    # Show how half rendering increases vertical resolution
+    print("\nComparing vertical resolution:")
+    tall_grid = [[0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0], [0, 1, 0]]
 
-def render_half(grid):
-    """
-    Render the grid using half block characters for increased vertical resolution.
+    print("\nFull rendering (6 rows):")
+    print(render_full(tall_grid))
 
-    This rendering mode combines pairs of vertically adjacent cells into a single
-    character, effectively doubling the vertical resolution.
-
-    Args:
-        grid (list): 2D list representing the current grid state
-
-    Returns:
-        str: A string representation of the grid where:
-            - "▀" represents a cell where only the top half is alive
-            - "▄" represents a cell where only the bottom half is alive
-            - "█" represents a cell where both halves are alive
-            - Space represents a cell where both halves are dead
-    """
-    # TODO: Combine pairs of vertically adjacent cells
-    # TODO: Map the combined states to the appropriate half-block characters
-    # TODO: Handle odd-height grids if necessary
-    pass
+    print("\nHalf rendering (3 rows, same information):")
+    print(render_half(tall_grid))
