@@ -150,7 +150,7 @@ docker build -f Dockerfile.lifegame -t lifegame .
 docker run lifegame
 
 # Run with specific options
-docker run lifegame --width 30 --height 15 --iterations 100 --rules highlife --random
+docker run lifegame --width 30 --height 15 --iterations 100 --rules highlife --random --no-clear
 
 # Run with a specific pattern (mount a volume to access local files)
 docker run -v $(pwd)/patterns:/patterns lifegame --input /patterns/glider.txt

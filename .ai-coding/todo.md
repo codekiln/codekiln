@@ -1,196 +1,87 @@
-# TODO Checklist for lifegame Package Development
+# TODO Checklist for Conway Bio Integration
 
-This checklist is designed to guide the step-by-step implementation of the lifegame package following the prompt plan. **Important:** After completing each prompt, stop and create a commit using the Conventional Commits specification with a commit message ending with the line:
-
+This checklist is designed to guide the integration of the lifegame package with the Conway Bio updater. **Important:** After completing each prompt, stop and create a commit using the Conventional Commits specification with a commit message ending with the line:
+```
+#2 integrate lifegame with conway-bio
+```
 
 ## Checklist Items
 
-### Prompt 1: Project Setup & Packaging
-- [x] **Directory Structure:**  
-- Create the following structure:
+### Prompt 1: Refactor Conway Bio to Use Lifegame Package
+- [ ] **Import Lifegame Functions:**  
+- Import necessary functions from the lifegame package (load_grid_from_string, step, render_full)
+- [ ] **Use Lifegame Grid Format:**  
+- Refactor the script to use the lifegame package's grid format and functions
+- [ ] **Maintain Functionality:**  
+- Ensure the script still fetches, parses, evolves, and updates the GitHub bio
+- [ ] **Error Handling:**  
+- Add appropriate error handling for all operations
+- [ ] **GitHub Actions Compatibility:**  
+- Ensure the script works in the GitHub Actions environment
+- [ ] **Local Testing:**  
+- Test the script locally before committing
+- [ ] **Commit:**  
+- **Stop and create a commit** with a commit message ending with:  
  ```
- /
- ├── lifegame/
- │   ├── pyproject.toml        # Minimal package metadata (project name, version, description)
- │   ├── README.md             # Package documentation
- │   ├── lifegame/
- │   │   ├── __init__.py       # Package initializer (can be empty or minimal)
- │   │   ├── game.py           # Game logic module (start with a module-level docstring)
- │   │   └── cli.py            # Command-line interface module (start with a module-level docstring)
- │   └── tests/
- │       └── test_game.py      # Placeholder for unit tests
- ```
-- [x] **Placeholder Content:**  
-- Add minimal content in `pyproject.toml` (e.g., project name, version, description).
-- Add basic module-level docstrings in `game.py` and `cli.py`.
-- [x] **Wiring:**  
-- Ensure that every file is properly created and "wired" together (no orphaned code).
-- [x] **Commit:**  
-- **Stop and create a commit** using the Conventional Commits specification ending with:  
- ```
- #1 increase resolution of life and package it up
+ #2 integrate lifegame with conway-bio
  ```
 
 ---
 
-### Prompt 2: Game Logic – Skeleton Functions
-- [x] **Skeleton Functions in `game.py`:**  
-In `lifegame/lifegame/game.py`, create the following function stubs with proper docstrings and inline "TODO" comments:
-- `load_grid_from_string(grid_str)`
-- `get_neighbors(x, y, grid)`
-- `next_cell_state(x, y, grid, rule_set)`  *(Include a note that rule_set may select between Standard, Day & Night, HighLife)*
-- `step(grid, rule_set)`
-- `render_full(grid)`
-- `render_half(grid)`
-- [x] **Module-Level Docstring:**  
-- Ensure the file starts with a clear module-level docstring explaining its purpose.
-- [x] **Wiring:**  
-- Confirm that all skeleton functions are included in the module.
-- [x] **Commit:**  
+### Prompt 2: Update GitHub Actions Workflow
+- [ ] **Docker Configuration:**  
+- Modify the workflow to use Dockerfile.lifegame as the base
+- Add any additional dependencies needed for conway-bio.py
+- [ ] **Workflow Steps:**  
+- Update steps to ensure lifegame is properly installed
+- Configure the workflow to run the refactored conway-bio.py script
+- [ ] **Trigger Verification:**  
+- Verify that the workflow can be triggered manually and on schedule
+- [ ] **Error Handling:**  
+- Add appropriate error handling and logging to the workflow
+- [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
- #1 increase resolution of life and package it up
+ #2 integrate lifegame with conway-bio
  ```
 
 ---
 
-### Prompt 3: Implement Grid Parsing and Neighbor Counting
-- [x] **Implement `load_grid_from_string`:**  
-- Parse a multi-line string where alive cells are represented by `"1"` or `"█"` and dead cells by `"0"` or a space into a 2D list of integers (1 for alive, 0 for dead).
-- [x] **Implement `get_neighbors`:**  
-- Count the number of alive neighbors for the cell at (x, y) using modulo arithmetic to handle the wraparound (toroidal grid).
-- [x] **Inline Comments & Error Checking:**  
-- Include inline comments and basic error checking.
-- [x] **Testing Instructions:**  
-- Add minimal tests (or instructions in comments) on how to verify the output (e.g., by calling `load_grid_from_string` with a sample grid and printing neighbor counts).
-- [x] **Wiring:**  
-- Wire these functions together by demonstrating a sample function call.
-- [x] **Commit:**  
+### Prompt 3: Create a Custom Docker Image for Conway Bio
+- [ ] **Create Dockerfile.conway-bio:**  
+- Extend the lifegame Docker image
+- Add necessary dependencies (requests, python-dotenv)
+- Copy conway-bio.py into the image
+- Set appropriate entrypoint
+- [ ] **Update Workflow:**  
+- Update GitHub Actions workflow to use the new Docker image
+- [ ] **Documentation:**  
+- Add build instructions to README.md
+- [ ] **Local Testing:**  
+- Verify the Docker image can be built and run locally
+- [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
- #1 increase resolution of life and package it up
+ #2 integrate lifegame with conway-bio
  ```
 
 ---
 
-### Prompt 4: Implement Next Cell State and Step Functions
-- [x] **Implement `next_cell_state`:**  
-- Calculate the next state (0 or 1) for the cell at (x, y) using:
- - The current state,
- - The neighbor count (using `get_neighbors`),
- - The selected rule set.
-- Fully implement the standard Conway rules (B3/S23) and include a framework (using comments or conditionals) for adding Day & Night and HighLife variants.
-- [x] **Implement `step`:**  
-- Create a new grid by applying `next_cell_state` to each cell in the current grid and return the new grid.
-- [x] **Testing Instructions:**  
-- Add comments or instructions on how to test these functions (e.g., using a known oscillator such as a blinker).
-- [x] **Wiring:**  
-- Wire these functions together to evolve a sample grid by one iteration.
-- [x] **Commit:**  
+### Prompt 4: Documentation and Testing
+- [ ] **README Updates:**  
+- Add section explaining how the Conway Bio updater works
+- Include instructions for running locally
+- Document GitHub Actions configuration
+- [ ] **Test Script:**  
+- Create a test script that mocks GitHub API calls
+- Verify correct grid evolution
+- Test error handling
+- [ ] **CI/CD Integration:**  
+- Update CI/CD workflow to include Conway Bio tests
+- [ ] **Code Comments:**  
+- Add detailed comments to conway-bio.py explaining lifegame integration
+- [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 5: Implement Rendering Functions
-- [x] **Implement `render_full`:**  
-- Return a string representation of the grid where alive cells are rendered as the full block character (e.g., `"█"`) and dead cells as a space.
-- [x] **Implement `render_half`:**  
-- Implement a rendering function using half block characters. For example:
- - `"▀"` for a cell that is only top-half alive,
- - `"▄"` for only bottom-half alive,
- - `"█"` for fully alive,
- - Space for dead.
-- (A simple mapping is acceptable for now; it can be refined later.)
-- [x] **Inline Comments & Output Samples:**  
-- Include inline comments and sample output instructions.
-- [x] **Wiring:**  
-- Ensure both rendering functions work with the grid produced by previous functions.
-- [x] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 6: Writing Unit Tests for Game Logic
-- [x] **Test for `load_grid_from_string`:**  
-- Verify that a multi-line string is correctly converted into a 2D list.
-- [x] **Test for `get_neighbors`:**  
-- Check correct neighbor counting, including wraparound behavior.
-- [x] **Test for `next_cell_state` and `step`:**  
-- Use a known oscillator (such as a blinker) to verify that the grid evolves as expected.
-- [x] **Tests for Rendering Functions:**  
-- Validate that `render_full` and `render_half` produce the expected string outputs for a given grid.
-- [x] **Clear Assertions & Comments:**  
-- Include clear assertions and descriptive comments in your tests.
-- [x] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 7: Implementing the Command-Line Interface (CLI)
-- [x] **Define Command-Line Options:**  
-- Implement command-line options using `argparse` for:
-  - `--width` and `--height` for grid dimensions
-  - `--iterations` for the number of simulation steps
-  - `--delay` for the delay between iterations
-  - `--rules` to select the rule set (e.g., "standard", "daynight", "highlife")
-  - `--display` to select the rendering mode ("full" or "half")
-- [x] **Load Initial Grid:**  
-- Implement functionality to load an initial grid from a default multi-line string or an optional input file
-- [x] **Simulation Loop:**  
-- Use the game logic functions (`load_grid_from_string`, `step`, `render_full`, `render_half`) to run the simulation in a loop
-- [x] **Display Grid:**  
-- Print the grid after each iteration (and optionally pause based on `--delay`)
-- [x] **Wiring:**  
-- Ensure that the CLI "wires" the game logic together, so that running the script results in a complete simulation cycle
-- [x] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 8: Wiring the Package Together
-- [x] **Finalize CLI Integration:**  
-- In `lifegame/lifegame/cli.py`, ensure the `main()` function properly parses command-line arguments and calls the simulation loop
-- [x] **Update Package Initialization:**  
-- Update `lifegame/__init__.py` if necessary to expose key functions
-- [x] **Configure Entry Points:**  
-- Modify `pyproject.toml` to add a `console_scripts` entry point so that the CLI can be invoked directly (e.g., via the command "lifegame-run")
-- [x] **Ensure Module Integration:**  
-- Ensure that all modules (`game.py` and `cli.py`) are properly imported and that no code is orphaned
-- [x] **Update Documentation:**  
-- Add a brief usage section at the top of `lifegame/README.md` explaining how to run the CLI and run tests
-- [x] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
- ```
-
----
-
-### Prompt 9: CI/CD Integration and Final Testing
-- [x] **Run Unit Tests:**  
-- Ensure that all unit tests in `lifegame/tests/test_game.py` and `lifegame/tests/test_package.py` run correctly using pytest
-- [x] **GitHub Actions Workflow:**  
-- Update the GitHub Actions workflow (if needed) to include a step that installs the package and runs the tests
-- [x] **Docker Integration:**  
-- Verify that the package works inside the Dockerfile environment
-- [x] **Documentation Updates:**  
-- Add instructions in the package README on how to run tests locally and in CI
-- [x] **Environment Variables:**  
-- Confirm that all environment variable handling (for example, using python-dotenv for local development) is documented
-- [x] **Commit:**  
-- **Stop and create a commit** with a commit message ending with:  
- ```
- #1 increase resolution of life and package it up
+ #2 integrate lifegame with conway-bio
  ```
