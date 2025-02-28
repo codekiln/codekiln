@@ -127,6 +127,40 @@ To run specific test files:
 poetry run pytest tests/test_game.py
 ```
 
+### Continuous Integration
+
+This project uses GitHub Actions for continuous integration. The workflow automatically:
+
+1. Runs all tests on every push and pull request that affects the `lifegame` directory
+2. Verifies that the package can be built and installed
+3. Checks that the CLI command works correctly
+
+You can manually trigger the CI workflow from the Actions tab in the GitHub repository.
+
+### Docker
+
+A Docker image is available for running the lifegame package:
+
+```bash
+# Build the Docker image
+docker build -f Dockerfile.lifegame -t lifegame .
+
+# Run the lifegame CLI with Docker
+docker run lifegame --width 30 --height 15 --iterations 100 --rules highlife
+
+# Run with a specific pattern (mount a volume to access local files)
+docker run -v $(pwd)/patterns:/patterns lifegame --input /patterns/glider.txt
+```
+
+## Environment Variables
+
+The lifegame package does not require any environment variables for normal operation.
+
+For development purposes, you may want to set:
+
+- `PYTHONPATH`: Include the project root directory if working with the source code directly
+- `POETRY_VIRTUALENVS_IN_PROJECT=true`: Keep Poetry's virtual environments within the project directory
+
 ## License
 
 See the LICENSE file in the root directory for license information. 

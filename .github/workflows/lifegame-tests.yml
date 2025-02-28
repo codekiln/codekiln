@@ -1,0 +1,45 @@
+name: Lifegame Package Tests
+
+on:
+  push:
+    paths:
+      - 'lifegame/**'
+  pull_request:
+    paths:
+      - 'lifegame/**'
+  workflow_dispatch:  # Allows manual triggering
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Set up Python
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.12'
+        
+    - name: Install Poetry
+      run: |
+        curl -sSL https://install.python-poetry.org | python3 -
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+        
+    - name: Install dependencies
+      run: |
+        cd lifegame
+        poetry install
+        
+    - name: Run tests
+      run: |
+        cd lifegame
+        poetry run pytest -v
+        
+    - name: Test package installation
+      run: |
+        cd lifegame
+        poetry build
+        pip install dist/*.whl
+        python -c "import lifegame; print(f'Successfully imported lifegame version {lifegame.__version__}')"
+        lifegame-run --help 

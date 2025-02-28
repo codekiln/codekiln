@@ -179,15 +179,15 @@ In `lifegame/lifegame/game.py`, create the following function stubs with proper 
 ---
 
 ### Prompt 9: CI/CD Integration and Final Testing
-- [ ] **Run Unit Tests:**  
+- [x] **Run Unit Tests:**  
 - Ensure that all unit tests in `lifegame/tests/test_game.py` and `lifegame/tests/test_package.py` run correctly using pytest
-- [ ] **GitHub Actions Workflow:**  
+- [x] **GitHub Actions Workflow:**  
 - Update the GitHub Actions workflow (if needed) to include a step that installs the package and runs the tests
-- [ ] **Docker Integration:**  
+- [x] **Docker Integration:**  
 - Verify that the package works inside the Dockerfile environment
-- [ ] **Documentation Updates:**  
+- [x] **Documentation Updates:**  
 - Add instructions in the package README on how to run tests locally and in CI
-- [ ] **Environment Variables:**  
+- [x] **Environment Variables:**  
 - Confirm that all environment variable handling (for example, using python-dotenv for local development) is documented
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
