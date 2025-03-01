@@ -244,7 +244,30 @@ def parse_bio_to_grid(current_bio, rows, cols):
     Returns:
         tuple: (grid, is_valid) where grid is a 2D list and is_valid indicates if the grid was valid
     """
-    # Parse the bio as a Conway's Game of Life grid
+    # Check if the bio is a flat string (no newlines) that needs to be inflated
+    if "\n" not in current_bio and len(current_bio) > 0:
+        # Calculate how many complete rows we can fill
+        complete_rows = len(current_bio) // cols
+        remainder = len(current_bio) % cols
+
+        # Reconstruct the bio with newlines
+        board_lines = []
+        for i in range(complete_rows):
+            board_lines.append(current_bio[i * cols : (i + 1) * cols])
+
+        # Add the remainder as a partial row if any
+        if remainder > 0:
+            partial_row = current_bio[complete_rows * cols :] + "□" * (cols - remainder)
+            board_lines.append(partial_row)
+
+        # Fill in any remaining rows with dead cells
+        while len(board_lines) < rows:
+            board_lines.append("□" * cols)
+
+        # Join with newlines to create a properly formatted bio
+        current_bio = "\n".join(board_lines)
+
+    # Now parse the bio as before
     lines = current_bio.split("\n")
     board_lines = lines[:rows]  # Use the first 'rows' lines
 
@@ -310,33 +333,34 @@ def format_grid_for_bio(grid, display_mode="full", max_length=DEFAULT_MAX_LENGTH
     if display_mode == "half":
         formatted_grid = formatted_grid.replace("▀", "■").replace("▄", "■")
 
+    # Create a display version with newlines for preview purposes
+    display_version = formatted_grid
+
     # Ensure the bio doesn't exceed the maximum length
     total_chars = len(formatted_grid.replace("\n", ""))
     if total_chars > max_length:
         print(f"Warning: Bio exceeds maximum length of {max_length} characters.")
         print(f"Current length: {total_chars} characters.")
+        print(
+            f"The bio will be truncated to {max_length} characters when sent to GitHub."
+        )
+        print(
+            "When retrieved, it will be inflated back to the original dimensions with dead cells."
+        )
 
-        # Truncate the bio if necessary
-        lines = formatted_grid.split("\n")
-        truncated_lines = []
-        total_length = 0
+        # Truncate the bio if necessary, but preserve the original format
+        # Just take the first max_length characters (flattened)
+        flat_bio = formatted_grid.replace("\n", "")
+        truncated_bio = flat_bio[:max_length]
 
-        for line in lines:
-            if total_length + len(line) <= max_length:
-                truncated_lines.append(line)
-                total_length += len(line)
-            else:
-                # Add as many characters as possible from the current line
-                remaining = max_length - total_length
-                if remaining > 0:
-                    truncated_lines.append(line[:remaining])
-                break
+        # For GitHub, we'll send the truncated flat string
+        formatted_grid = truncated_bio
+    else:
+        # For GitHub, we'll send the flat string without newlines
+        formatted_grid = formatted_grid.replace("\n", "")
 
-        formatted_grid = "\n".join(truncated_lines)
-        print(f"Bio truncated to {len(formatted_grid.replace('\\n', ''))} characters.")
-        print("Some cells have been removed to fit within GitHub's character limit.")
-
-    return formatted_grid
+    # Return both the GitHub version (flat string) and the display version (with newlines)
+    return formatted_grid, display_version
 
 
 def preview_evolution(
@@ -426,22 +450,15 @@ def main():
         print(
             f"Warning: Grid dimensions ({args.rows}x{args.columns}={total_chars}) exceed max length ({args.max_length})."
         )
-
-        # Calculate safe dimensions
-        safe_rows, safe_columns = calculate_safe_dimensions(
-            args.rows, args.columns, args.max_length, args.display
-        )
-
         print(
-            f"Adjusting dimensions from {args.rows}x{args.columns} to {safe_rows}x{safe_columns}"
+            f"The bio will be truncated to {args.max_length} characters when sent to GitHub."
         )
         print(
-            f"The adjusted dimensions will fit within the {args.max_length} character limit."
+            "When retrieved, it will be inflated back to the original dimensions with dead cells."
         )
 
-        # Update the arguments with safe dimensions
-        args.rows = safe_rows
-        args.columns = safe_columns
+        # We no longer adjust dimensions - we'll keep the original dimensions
+        # and just truncate when sending to GitHub
 
     # Read PAT from environment variable "PAT_GITHUB"
     pat = os.getenv("PAT_GITHUB")
@@ -525,11 +542,14 @@ def main():
             )
 
             # Format the final grid for display
-            formatted_grid = format_grid_for_bio(
+            github_bio, display_bio = format_grid_for_bio(
                 final_grid, args.display, args.max_length
             )
             print("\nFinal grid (formatted for bio):")
-            print(formatted_grid)
+            print(display_bio)
+
+            print("\nActual content sent to GitHub (without newlines):")
+            print(github_bio)
 
             # Exit without updating bio
             return
@@ -538,14 +558,19 @@ def main():
         new_grid = step(grid, rule_set=args.rules)
 
         # Format the grid for the bio
-        new_bio = format_grid_for_bio(new_grid, args.display, args.max_length)
+        github_bio, display_bio = format_grid_for_bio(
+            new_grid, args.display, args.max_length
+        )
 
         # Debug output to show the result
-        print("\nOutput grid:")
-        print(new_bio)
+        print("\nOutput grid (as displayed on GitHub):")
+        print(display_bio)
+
+        print("\nActual content sent to GitHub (without newlines):")
+        print(github_bio)
 
         # Update the GitHub bio
-        update_github_bio(pat, new_bio)
+        update_github_bio(pat, github_bio)
 
     except ValueError as e:
         print(f"Error processing the grid: {e}")
