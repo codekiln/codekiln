@@ -42,10 +42,13 @@ This checklist is designed to guide the integration of the lifegame package with
 - Expose rule variations (Standard Conway, Day & Night, HighLife)
 - Add display mode options (full block or half block characters)
 - Include grid initialization options (random, from file)
-- [ ] **Add Randomization Feature:**  
-- Implement a `--randomize` option that uses the day of the year
+- [ ] **Add Random-By-Day Feature:**  
+- Implement a `--random-by-day` option that uses the day of the year
 - Use modulo arithmetic to select options based on the date
 - Create variety in bio updates over time
+- [ ] **Add Randomize-Board Feature:**  
+- Implement a `--randomize-board` option to generate a random initial board
+- Allow specifying density of live cells
 - [ ] **Add Preview Mode:**  
 - Implement a `--preview` option to show evolution without updating GitHub bio
 - Allow displaying multiple iterations locally
