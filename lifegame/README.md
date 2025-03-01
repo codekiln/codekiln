@@ -144,7 +144,7 @@ A Docker image is available for running the lifegame package:
 
 ```bash
 # Build the Docker image
-docker build -f Dockerfile.lifegame -t lifegame .
+docker build -t lifegame .
 
 # Run the lifegame CLI with Docker (using the included pattern)
 docker run lifegame

@@ -11,8 +11,33 @@ Below is a plan for integrating the lifegame package with the Conway Bio updater
 1. stop after every prompt
 2. mark off any items that are completed in [todo.md](mdc:.ai-coding/todo.md)
 3. do a scoped `git add`
-3. create a commit using the Conventional Commits specification ending with a line `#2 integrate lifegame with conway-bio`
+3. create a commit using the Conventional Commits specification ending with a line `#7 integrate new lifegame package with CI rules that update bio for #1`
 </IMPORTANT_INSTRUCTIONS_FOR_EACH_PROMPT>
+
+## Prompt 0: Fix Critical Issues and Refactor Business Logic
+
+Before proceeding with the integration, we need to address several critical issues:
+
+1. Refactor business logic from conway-bio.py into the lifegame package:
+   - Move grid formatting and bio-specific functions to lifegame/bio.py
+   - Add proper tests for these functions in lifegame/tests/test_bio.py
+   - Ensure all functions are properly documented
+
+2. Fix character width issues in rendering:
+   - Address the problem that ■ and ▀ are not the same width
+   - Investigate and implement a solution for non-monospaced font rendering in GitHub bios
+   - Change the default display mode to full block characters for consistency
+   - Add tests to verify rendering consistency
+
+3. Fix Docker build issues:
+   - Debug and fix the error when running `docker build -f Dockerfile.lifegame -t lifegame .`
+   - Ensure the Dockerfile.lifegame is properly configured
+   - Test the Docker build process
+
+4. Fix mise run issues:
+   - Debug and fix the ValueError when running `mise run run` in the lifegame directory
+   - Update the .mise.toml configuration as needed
+   - Test the mise run command
 
 ## Prompt 1: Refactor Conway Bio to Use Lifegame Package
 
@@ -33,25 +58,37 @@ Please refactor the conway-bio.py script to use the lifegame package instead of 
 
 Make sure to test the script locally before committing.
 
-### Additional Task: Improve Development Environment Setup
+## Prompt 1.5: Enhance Conway Bio with Rich Rendering Options
 
-To make the development environment more efficient and elegant:
+Enhance the conway-bio.py script to leverage the full capabilities of the lifegame package:
 
-1. Use `mise` to manage `uv` for Python environment management:
-   - Create a `.mise.toml` file in the root directory to configure Python and uv
-   - Configure mise to automatically activate the appropriate Python environment
-   - Set up uv to manage dependencies for the root application
+1. Add command-line arguments using argparse to expose options from lifegame:
+   - Rule variations (Standard Conway, Day & Night, HighLife)
+   - Display modes (full block or half block characters)
+   - Grid initialization options (random, from file)
+2. Add a `--random-by-day` option that:
+   - Takes the day of the year
+   - Uses modulo arithmetic to select options based on the date
+   - Creates variety in the bio updates over time
+3. Add a `--randomize-board` option that:
+   - Generates a random initial board
+   - Allows specifying density of live cells
+4. Add a `--preview` option to:
+   - Show the evolution without updating the GitHub bio
+   - Display multiple iterations locally
+5. Ensure backward compatibility:
+   - Default behavior should match the original script
+   - GitHub Actions workflow should still work without changes
+6. Add documentation for the new options in:
+   - Script help text
+   - Code comments
+   - README.md
 
-2. Convert from requirements.txt to pyproject.toml in the root:
-   - Create a pyproject.toml file that includes all necessary dependencies
-   - Configure the root project to include the lifegame package as a development dependency
-   - Ensure the conway-bio.py script can be run easily from the root directory
-
-This will create a more seamless development experience where you can run the conway-bio.py script directly from the root without manually activating environments or installing packages.
+Test the enhanced script locally with various option combinations before committing.
 
 ## Prompt 2: Update GitHub Actions Workflow
 
-Please update the GitHub Actions workflow (.github/workflows/conway-bio.yml) to use the lifegame package:
+Please update the GitHub Actions workflow ([conway-bio.py](mdc:conway-bio.py)) to use the lifegame package:
 
 1. Modify the Docker container configuration to:
    - Use the Dockerfile.lifegame as the base
@@ -66,22 +103,20 @@ Ensure that the workflow is compatible with the refactored conway-bio.py script.
 
 ## Prompt 3: Create a Custom Docker Image for Conway Bio
 
-
 Please create a custom Docker image specifically for the Conway Bio updater:
 
 1. Create a new Dockerfile (Dockerfile.conway-bio) that:
    - Extends the lifegame Docker image
-   - Adds the necessary dependencies for the conway-bio.py script (requests, python-dotenv)
+   - Adds the necessary dependencies for the [conway-bio.py](mdc:conway-bio.py) script (requests, python-dotenv)
    - Copies the conway-bio.py script into the image
    - Sets the appropriate entrypoint
 2. Update the GitHub Actions workflow to use this new Docker image
-3. Add build instructions to the README.md
+3. Add build instructions to the [README.md](mdc:README.md)
 4. Ensure the Docker image can be built and run locally
 
 This custom Docker image will make it easier to run the Conway Bio updater both locally and in GitHub Actions.
 
 ## Prompt 4: Documentation and Testing
-
 
 Please update the documentation and add tests for the Conway Bio integration:
 
@@ -94,6 +129,6 @@ Please update the documentation and add tests for the Conway Bio integration:
    - Verifies that the Conway Bio updater correctly evolves a grid
    - Checks error handling
 3. Update the CI/CD workflow to include these tests
-4. Add comments to the conway-bio.py script explaining how it uses the lifegame package
+4. Add comments to the [conway-bio.py](mdc:conway-bio.py) script explaining how it uses the lifegame package
 
 This will ensure that the integration is well-documented and tested.

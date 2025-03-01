@@ -2,23 +2,20 @@ FROM python:3.12-slim
 
 WORKDIR /app
 
-# Copy the package files
-COPY lifegame/ /app/lifegame/
+# Copy the entire package directory
+COPY . /app/
 
 # Install poetry
 RUN pip install --no-cache-dir poetry
 
 # Install the package
-WORKDIR /app/lifegame
-RUN poetry build && \
+RUN cd /app && \
+    poetry build && \
     pip install dist/*.whl
 
 # Create patterns directory with a sample pattern
 RUN mkdir -p /app/patterns
 RUN echo "000\n010\n001\n111" > /app/patterns/glider.txt
-
-# Set the working directory for running commands
-WORKDIR /app
 
 # Set environment variables
 ENV TERM=xterm-256color

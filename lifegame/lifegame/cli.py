@@ -133,17 +133,32 @@ def generate_random_grid(width, height, density=0.3):
 
 def get_default_grid():
     """
-    Return a default grid (a glider).
+    Get a default grid with a glider pattern.
 
     Returns:
-        list: A grid containing a glider pattern
+        list: A 2D grid with a glider pattern
     """
     glider = """
  █ 
   █
 ███
 """
-    return load_grid_from_string(glider)
+    # Fix the inconsistent width issue by ensuring all lines have the same width
+    glider = """
+ █ 
+  █
+███
+""".strip()
+
+    # Parse the grid manually to avoid the inconsistent width error
+    lines = glider.split("\n")
+    max_width = max(len(line) for line in lines)
+
+    # Pad lines to ensure consistent width
+    padded_lines = [line.ljust(max_width) for line in lines]
+    padded_glider = "\n".join(padded_lines)
+
+    return load_grid_from_string(padded_glider)
 
 
 def main():

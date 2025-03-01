@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Find a Blank Character Matching 259.20px Width</title>
+  <style>
+    body {
+      font-family: -apple-system, "system-ui", "Segoe UI",
+                   "Noto Sans", Helvetica, Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.5;
+    }
+    #measure-span {
+      position: absolute;
+      visibility: hidden;
+      white-space: nowrap;
+      font-size: 16px;
+      top: -9999px;
+    }
+    .result-container {
+      margin-top: 1em;
+      padding: 1em;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Find a Blank Character Matching 259.20px Width</h1>
+<p>
+  This tool finds a **blank (empty, space-like, or invisible) character** 
+  that has the **same width** as <code>30</code> copies of a **Symbols for Legacy Computing** character 
+  (which measured **259.20px**).
+</p>
+
+<div id="results"></div>
+<span id="measure-span"></span>
+
+<script>
+/*********************************************************
+ * CONFIG: Unicode Whitespace and Blank Characters
+ *********************************************************/
+const NUM_COPIES = 30;  // How many times to repeat each character for measurement
+const TARGET_WIDTH = 259.20;  // Reference width of Group 25 characters
+const TOLERANCE = 0.5;  // Acceptable difference in width
+
+// Various Unicode "blank" or space-like characters to test
+const BLANK_CANDIDATES = [
+  " ",      // U+0020 SPACE
+  "\u00A0", // NO-BREAK SPACE
+  "\u2000", // EN QUAD
+  "\u2001", // EM QUAD
+  "\u2002", // EN SPACE
+  "\u2003", // EM SPACE
+  "\u2004", // THREE-PER-EM SPACE
+  "\u2005", // FOUR-PER-EM SPACE
+  "\u2006", // SIX-PER-EM SPACE
+  "\u2007", // FIGURE SPACE
+  "\u2008", // PUNCTUATION SPACE
+  "\u2009", // THIN SPACE
+  "\u200A", // HAIR SPACE
+  "\u202F", // NARROW NO-BREAK SPACE
+  "\u205F", // MEDIUM MATHEMATICAL SPACE
+  "\u2800", // BRAILLE PATTERN BLANK
+  "\u3000", // IDEOGRAPHIC SPACE
+  "\u3164", // HANGUL FILLER
+  "\uFEFF", // ZERO WIDTH NO-BREAK SPACE (mostly invisible)
+];
+
+/*********************************************************
+ * MEASUREMENT FUNCTION
+ *********************************************************/
+const measureSpan = document.getElementById("measure-span");
+const resultsDiv = document.getElementById("results");
+
+// Helper: measure pixel width of a string in GitHub's font stack
+function measureWidth(str) {
+  measureSpan.textContent = str;
+  return measureSpan.getBoundingClientRect().width;
+}
+
+/*********************************************************
+ * MAIN FUNCTION: Find the Best Blank Match
+ *********************************************************/
+function runTest() {
+  let bestMatch = null;
+  let closestMatch = null;
+  let minDiff = Infinity;
+
+  // Measure each blank character
+  BLANK_CANDIDATES.forEach(blankChar => {
+    const testStr = blankChar.repeat(NUM_COPIES);
+    const width = measureWidth(testStr);
+    const diff = Math.abs(width - TARGET_WIDTH);
+
+    // Check for a perfect match
+    if (diff < TOLERANCE) {
+      bestMatch = { char: blankChar, width, diff };
+    }
+
+    // Track the closest match
+    if (diff < minDiff) {
+      minDiff = diff;
+      closestMatch = { char: blankChar, width, diff };
+    }
+  });
+
+  // Render the results
+  resultsDiv.innerHTML = "";
+
+  if (bestMatch) {
+    resultsDiv.innerHTML += `
+      <div class="result-container">
+        <strong>✅ Found a Perfect Match!</strong><br/>
+        Character: [${bestMatch.char}] (U+${bestMatch.char.codePointAt(0).toString(16).toUpperCase()})<br/>
+        Width: ${bestMatch.width.toFixed(2)}px (Target: ${TARGET_WIDTH}px)
+      </div>
+    `;
+  } else {
+    resultsDiv.innerHTML += `
+      <div class="result-container">
+        <strong>⚠️ No exact match found, but closest:</strong><br/>
+        Character: [${closestMatch.char}] (U+${closestMatch.char.codePointAt(0).toString(16).toUpperCase()})<br/>
+        Width: ${closestMatch.width.toFixed(2)}px (Diff: ${closestMatch.diff.toFixed(2)}px)
+      </div>
+    `;
+  }
+}
+
+// Run the test
+runTest();
+</script>
+
+</body>
+</html>

@@ -13,4 +13,4 @@ install = { run = "uv pip install -e '.[dev]'" }
 # Run tests
 test = { run = "python -m pytest" }
 # Run the lifegame CLI
-run = { run = "python -m lifegame.cli" } 
+run = { run = "python -m lifegame.cli", depends = ["install"] } 

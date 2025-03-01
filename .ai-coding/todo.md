@@ -7,6 +7,36 @@ This checklist is designed to guide the integration of the lifegame package with
 
 ## Checklist Items
 
+### Prompt 0: Fix Critical Issues and Refactor Business Logic
+- [x] **Refactor Business Logic:**  
+  - [x] Create a new module lifegame/bio.py for bio-specific functions
+  - [x] Move grid formatting and parsing functions from conway-bio.py to lifegame/bio.py
+  - [x] Create proper interfaces for these functions
+  - [x] Add comprehensive documentation for all functions
+- [x] **Fix Character Width Issues:**  
+  - [x] Investigate character width issues with ■ and ▀ in GitHub bios
+  - [x] Research alternative characters that render consistently in non-monospaced fonts
+  - [x] Update rendering functions to use consistent-width characters
+  - [x] Change the default display mode to full block characters
+- [x] **Add Tests for Bio Module:**  
+  - [x] Create lifegame/tests/test_bio.py
+  - [x] Add tests for all bio-specific functions
+  - [x] Ensure test coverage for edge cases
+- [x] **Fix Docker Build Issues:**  
+  - [x] Debug the error when running `docker build -f Dockerfile.lifegame -t lifegame .`
+  - [x] Update Dockerfile.lifegame as needed
+  - [x] Test the Docker build process
+  - [x] Move Dockerfile from utils/Dockerfile.lifegame to lifegame/Dockerfile for better convention
+- [x] **Fix Mise Run Issues:**  
+  - [x] Debug the ValueError when running `mise run run` in lifegame directory
+  - [x] Update .mise.toml configuration
+  - [x] Test the mise run command
+- [ ] **Commit:**  
+  - **Stop and create a commit** with a commit message ending with:  
+  ```
+  #2 integrate lifegame with conway-bio
+  ```
+
 ### Prompt 1: Refactor Conway Bio to Use Lifegame Package
 - [x] **Import Lifegame Functions:**  
 - Import necessary functions from the lifegame package (load_grid_from_string, step, render_full)

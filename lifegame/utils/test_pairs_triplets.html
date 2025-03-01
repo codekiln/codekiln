@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Find Blank Space Combination for 259.20px</title>
+  <style>
+    body {
+      font-family: -apple-system, "system-ui", "Segoe UI",
+                   "Noto Sans", Helvetica, Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.5;
+    }
+    #measure-span {
+      position: absolute;
+      visibility: hidden;
+      white-space: nowrap;
+      font-size: 16px;
+      top: -9999px;
+    }
+    .result-container {
+      margin-top: 1em;
+      padding: 1em;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Find Blank Space Combination Matching 259.20px</h1>
+<p>
+  This tool finds **combinations** of blank (empty, space-like) characters 
+  that sum up to **259.20px**.
+</p>
+
+<div id="results"></div>
+<span id="measure-span"></span>
+
+<script>
+/*********************************************************
+ * CONFIG: Expanded Unicode Search Space
+ *********************************************************/
+const NUM_COPIES = 30;  // How many times to repeat each character for measurement
+const TARGET_WIDTH = 259.20;  // Reference width of Group 25 characters
+const TOLERANCE = 0.5;  // Acceptable difference in width
+
+// Expanding to more space-like, invisible, and possibly matching glyphs
+const BLANK_CANDIDATES = [
+  " ", "\u00A0", "\u2000", "\u2001", "\u2002", "\u2003", "\u2004", "\u2005", "\u2006",
+  "\u2007", "\u2008", "\u2009", "\u200A", "\u202F", "\u205F", "\u2800", "\u3000", "\u3164", "\uFEFF"
+];
+
+/*********************************************************
+ * MEASUREMENT FUNCTION
+ *********************************************************/
+const measureSpan = document.getElementById("measure-span");
+const resultsDiv = document.getElementById("results");
+
+// Helper: measure pixel width of a string in GitHub's font stack
+function measureWidth(str) {
+  measureSpan.textContent = str;
+  return measureSpan.getBoundingClientRect().width;
+}
+
+/*********************************************************
+ * MAIN FUNCTION: Find the Best Blank Match (Using Combinations)
+ *********************************************************/
+function runTest() {
+  let bestMatch = null;
+  let minDiff = Infinity;
+
+  // 1. Measure widths of individual candidates
+  let spaceWidths = BLANK_CANDIDATES.map(char => ({
+    char,
+    width: measureWidth(char.repeat(NUM_COPIES))
+  }));
+
+  // 2. Try **single characters**
+  spaceWidths.forEach(space => {
+    const diff = Math.abs(space.width - TARGET_WIDTH);
+    if (diff < minDiff) {
+      minDiff = diff;
+      bestMatch = { chars: [space.char], width: space.width, diff };
+    }
+  });
+
+  // 3. Try **pairs** of characters
+  for (let i = 0; i < spaceWidths.length; i++) {
+    for (let j = 0; j < spaceWidths.length; j++) {
+      const combinedWidth = spaceWidths[i].width + spaceWidths[j].width;
+      const diff = Math.abs(combinedWidth - TARGET_WIDTH);
+
+      if (diff < minDiff) {
+        minDiff = diff;
+        bestMatch = { chars: [spaceWidths[i].char, spaceWidths[j].char], width: combinedWidth, diff };
+      }
+    }
+  }
+
+  // 4. Try **triplets** of characters
+  for (let i = 0; i < spaceWidths.length; i++) {
+    for (let j = 0; j < spaceWidths.length; j++) {
+      for (let k = 0; k < spaceWidths.length; k++) {
+        const combinedWidth = spaceWidths[i].width + spaceWidths[j].width + spaceWidths[k].width;
+        const diff = Math.abs(combinedWidth - TARGET_WIDTH);
+
+        if (diff < minDiff) {
+          minDiff = diff;
+          bestMatch = { chars: [spaceWidths[i].char, spaceWidths[j].char, spaceWidths[k].char], width: combinedWidth, diff };
+        }
+      }
+    }
+  }
+
+  // Render the results
+  resultsDiv.innerHTML = "";
+
+  if (bestMatch.diff < TOLERANCE) {
+    resultsDiv.innerHTML += `
+      <div class="result-container">
+        <strong>✅ Found a Perfect Match!</strong><br/>
+        Characters: [${bestMatch.chars.join("")}]<br/>
+        Unicode: ${bestMatch.chars.map(c => "U+" + c.codePointAt(0).toString(16).toUpperCase()).join(", ")}<br/>
+        Width: ${bestMatch.width.toFixed(2)}px (Target: ${TARGET_WIDTH}px)
+      </div>
+    `;
+  } else {
+    resultsDiv.innerHTML += `
+      <div class="result-container">
+        <strong>⚠️ No exact match found, but closest:</strong><br/>
+        Characters: [${bestMatch.chars.join("")}]<br/>
+        Unicode: ${bestMatch.chars.map(c => "U+" + c.codePointAt(0).toString(16).toUpperCase()).join(", ")}<br/>
+        Width: ${bestMatch.width.toFixed(2)}px (Diff: ${bestMatch.diff.toFixed(2)}px)
+      </div>
+    `;
+  }
+}
+
+// Run the test
+runTest();
+</script>
+
+</body>
+</html>
