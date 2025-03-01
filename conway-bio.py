@@ -7,25 +7,41 @@ with each run. It uses the lifegame package to handle the grid evolution logic.
 
 The script:
 1. Fetches the current GitHub bio
-2. Parses it as an 18x8 Conway's Game of Life grid
+2. Parses it as a Conway's Game of Life grid (default: 33x5)
 3. Evolves the grid one step using the lifegame package
 4. Updates the bio with the new grid
 
+Command-line options:
+  --rules {standard,daynight,highlife}  Rule set to use (default: standard)
+  --display {full,half}                 Display mode to use (default: full)
+  --random-by-day                       Select options based on day of year
+  --randomize-board [DENSITY]           Generate a random initial board
+  --preview [ITERATIONS]                Preview evolution without updating bio
+  --input FILE                          Load initial grid from file
+  --rows ROWS                           Number of rows in the grid (default: 5)
+  --columns COLUMNS                     Number of columns in the grid (default: 33)
+  --max-length LENGTH                   Maximum bio length (default: 160)
+
 The script requires a GitHub Personal Access Token (PAT) with the 'user' scope,
 which can be provided via the PAT_GITHUB environment variable.
+
+Note: GitHub bio has a maximum of 160 characters. The default grid (33x5=165)
+slightly exceeds this, but the script handles this by treating the last few cells
+as permanently dead.
 """
 
+import argparse
+import datetime
 import getpass
 import os
 import sys
+import time
 
 import requests
 
 # Import the necessary functions from the lifegame package
-# - load_grid_from_string: Parse a string representation of a grid
-# - step: Evolve a grid one step according to Conway's Game of Life rules
-# - render_full: Convert a grid back to a string representation
-from lifegame import render_full, step
+from lifegame import load_grid_from_string, render_full, render_half, step
+from lifegame.cli import generate_random_grid
 
 # Only try to load dotenv if not running in GitHub Actions
 if "GITHUB_ACTIONS" not in os.environ:
@@ -33,110 +49,445 @@ if "GITHUB_ACTIONS" not in os.environ:
 
     load_dotenv()
 
-# Constants for grid dimensions
-ROWS = 8
-COLS = 18
+# Default constants for grid dimensions
+DEFAULT_ROWS = 5
+DEFAULT_COLS = 33
+DEFAULT_MAX_LENGTH = 160
 
 
-def main():
-    # Read PAT from environment variable "PAT_GITHUB"
-    pat = os.getenv("PAT_GITHUB")
-    if not pat:
-        # Fall back to prompt if not set, without echoing the input.
-        pat = getpass.getpass("Enter your GitHub PAT (it will not be echoed): ")
+def parse_arguments():
+    """Parse command-line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Update GitHub bio with Conway's Game of Life grid."
+    )
 
+    # Rule set options
+    parser.add_argument(
+        "--rules",
+        type=str,
+        default="standard",
+        choices=["standard", "daynight", "highlife"],
+        help="Rule set to use (default: standard)",
+    )
+
+    # Display mode options
+    parser.add_argument(
+        "--display",
+        type=str,
+        default="full",
+        choices=["full", "half"],
+        help="Display mode to use (default: full)",
+    )
+
+    # Random options
+    parser.add_argument(
+        "--random-by-day",
+        action="store_true",
+        help="Select options based on day of year",
+    )
+
+    parser.add_argument(
+        "--randomize-board",
+        nargs="?",
+        const=0.3,
+        type=float,
+        metavar="DENSITY",
+        help="Generate a random initial board with specified density (0.0-1.0, default: 0.3)",
+    )
+
+    # Preview mode
+    parser.add_argument(
+        "--preview",
+        nargs="?",
+        const=5,
+        type=int,
+        metavar="ITERATIONS",
+        help="Preview evolution without updating bio (default: 5 iterations)",
+    )
+
+    # Input file
+    parser.add_argument(
+        "--input",
+        type=str,
+        help="Path to a file containing the initial grid",
+    )
+
+    # Grid dimensions
+    parser.add_argument(
+        "--rows",
+        type=int,
+        default=DEFAULT_ROWS,
+        help=f"Number of rows in the grid (default: {DEFAULT_ROWS})",
+    )
+
+    parser.add_argument(
+        "--columns",
+        type=int,
+        default=DEFAULT_COLS,
+        help=f"Number of columns in the grid (default: {DEFAULT_COLS})",
+    )
+
+    parser.add_argument(
+        "--max-length",
+        type=int,
+        default=DEFAULT_MAX_LENGTH,
+        help=f"Maximum bio length (default: {DEFAULT_MAX_LENGTH})",
+    )
+
+    return parser.parse_args()
+
+
+def get_random_options_by_day():
+    """
+    Select random options based on the day of the year.
+
+    Returns:
+        dict: Dictionary with randomly selected options
+    """
+    # Get the day of the year (1-366)
+    day_of_year = datetime.datetime.now().timetuple().tm_yday
+
+    # Available rule sets and display modes
+    rule_sets = ["standard", "daynight", "highlife"]
+    display_modes = ["full", "half"]
+
+    # Use the day of year to select options
+    selected_rule = rule_sets[day_of_year % len(rule_sets)]
+    selected_display = display_modes[
+        (day_of_year // len(rule_sets)) % len(display_modes)
+    ]
+
+    return {
+        "rules": selected_rule,
+        "display": selected_display,
+    }
+
+
+def load_grid_from_file(file_path):
+    """
+    Load a grid from a file.
+
+    Args:
+        file_path (str): Path to the file containing the grid
+
+    Returns:
+        list: The loaded grid
+    """
     try:
-        # 1) GET /user to read current bio
+        with open(file_path, "r") as f:
+            grid_str = f.read()
+        return load_grid_from_string(grid_str)
+    except FileNotFoundError:
+        print(f"Error: File '{file_path}' not found.")
+        sys.exit(1)
+    except ValueError as e:
+        print(f"Error parsing grid from file: {e}")
+        sys.exit(1)
+
+
+def parse_bio_to_grid(current_bio, rows, cols):
+    """
+    Parse a GitHub bio string into a Conway's Game of Life grid.
+
+    Args:
+        current_bio (str): The GitHub bio string
+        rows (int): Number of rows in the grid
+        cols (int): Number of columns in the grid
+
+    Returns:
+        tuple: (grid, is_valid) where grid is a 2D list and is_valid indicates if the grid was valid
+    """
+    # Parse the bio as a Conway's Game of Life grid
+    lines = current_bio.split("\n")
+    board_lines = lines[:rows]  # Use the first 'rows' lines
+
+    # Validate that we have the expected number of lines with correct width
+    valid = True
+    if len(board_lines) < rows:
+        valid = False
+        # Pad with empty rows if we have fewer than expected
+        board_lines.extend(["□" * cols] * (rows - len(board_lines)))
+    else:
+        for i, line in enumerate(board_lines):
+            # Ensure each line has exactly 'cols' characters
+            if len(line) != cols:
+                valid = False
+                # Pad or truncate the line to match cols
+                if len(line) < cols:
+                    board_lines[i] = line + "□" * (cols - len(line))
+                else:
+                    board_lines[i] = line[:cols]
+
+    # If completely invalid (e.g., empty bio), seed a default glider board
+    if not valid and len("".join(board_lines).strip()) == 0:
+        # Create a default glider in the top-left corner
+        board_lines = ["□" * cols for _ in range(rows)]
+        if cols >= 3 and rows >= 3:
+            board_lines[0] = "□■□" + "□" * (cols - 3)
+            board_lines[1] = "□□■" + "□" * (cols - 3)
+            board_lines[2] = "■■■" + "□" * (cols - 3)
+
+    # Create a 2D grid directly for the lifegame package
+    # Convert "■" to 1 (alive) and "□" to 0 (dead)
+    grid = []
+    for line in board_lines:
+        row = [1 if cell == "■" else 0 for cell in line]
+        grid.append(row)
+
+    return grid, valid
+
+
+def format_grid_for_bio(grid, display_mode="full", max_length=DEFAULT_MAX_LENGTH):
+    """
+    Format a grid for display in a GitHub bio.
+
+    Args:
+        grid (list): 2D list representing the grid
+        display_mode (str): Display mode to use (full or half)
+        max_length (int): Maximum length of the bio
+
+    Returns:
+        str: Formatted grid string for GitHub bio
+    """
+    # Select the appropriate rendering function
+    render_func = render_full if display_mode == "full" else render_half
+
+    # Convert the grid to a string
+    rendered_grid = render_func(grid)
+
+    # Convert the rendered output to the format used in the bio
+    # Replace "█" with "■" and spaces with "□"
+    formatted_grid = rendered_grid.replace("█", "■").replace(" ", "□")
+
+    # For half-block mode, also replace the half blocks
+    if display_mode == "half":
+        formatted_grid = formatted_grid.replace("▀", "■").replace("▄", "■")
+
+    # Ensure the bio doesn't exceed the maximum length
+    if len(formatted_grid.replace("\n", "")) > max_length:
+        print(f"Warning: Bio exceeds maximum length of {max_length} characters.")
+        print(f"Current length: {len(formatted_grid.replace('\\n', ''))} characters.")
+
+        # Truncate the bio if necessary
+        lines = formatted_grid.split("\n")
+        truncated_lines = []
+        total_length = 0
+
+        for line in lines:
+            if total_length + len(line) <= max_length:
+                truncated_lines.append(line)
+                total_length += len(line)
+            else:
+                # Add as many characters as possible from the current line
+                remaining = max_length - total_length
+                if remaining > 0:
+                    truncated_lines.append(line[:remaining])
+                break
+
+        formatted_grid = "\n".join(truncated_lines)
+        print(f"Bio truncated to {len(formatted_grid.replace('\\n', ''))} characters.")
+
+    return formatted_grid
+
+
+def preview_evolution(
+    grid, iterations=5, rule_set="standard", display_mode="full", delay=0.5
+):
+    """
+    Preview the evolution of a grid without updating the GitHub bio.
+
+    Args:
+        grid (list): Initial grid state
+        iterations (int): Number of iterations to run
+        rule_set (str): Rule set to use
+        display_mode (str): Display mode to use
+        delay (float): Delay between iterations in seconds
+    """
+    # Select the appropriate rendering function
+    render_func = render_full if display_mode == "full" else render_half
+
+    # Display the initial grid
+    print(f"\nInitial grid (Rule set: {rule_set}, Display mode: {display_mode}):")
+    print(render_func(grid))
+
+    # Run the simulation for the specified number of iterations
+    for i in range(iterations):
+        # Wait for the specified delay
+        time.sleep(delay)
+
+        # Evolve the grid one step
+        grid = step(grid, rule_set=rule_set)
+
+        # Display the updated grid
+        print(f"\nIteration {i + 1}/{iterations}:")
+        print(render_func(grid))
+
+    return grid
+
+
+def update_github_bio(pat, bio_content):
+    """
+    Update the GitHub bio with the provided content.
+
+    Args:
+        pat (str): GitHub Personal Access Token
+        bio_content (str): New bio content
+
+    Returns:
+        bool: True if successful, False otherwise
+    """
+    try:
         headers = {
             "Accept": "application/vnd.github+json",
             "Authorization": f"Bearer {pat}",
         }
-        response = requests.get("https://api.github.com/user", headers=headers)
-        response.raise_for_status()  # Raise an exception for HTTP errors
 
-        user_data = response.json()
-        current_bio = user_data.get("bio") or ""
+        payload = {"bio": bio_content}
+        response = requests.patch(
+            "https://api.github.com/user", headers=headers, json=payload
+        )
+        response.raise_for_status()
 
-        # 2) Parse the first 8 lines of the bio as a Conway's Game of Life grid
-        lines = current_bio.split("\n")
-        board_lines = lines[:ROWS]  # Use the first 8 lines
+        print("\nBio updated successfully!")
+        return True
 
-        # Validate that we have 8 lines of exactly 18 characters
-        # This ensures the grid has consistent dimensions for the lifegame package
-        valid = True
-        if len(board_lines) < ROWS:
-            valid = False
-            # Pad with empty rows if we have fewer than ROWS
-            board_lines.extend(["□" * COLS] * (ROWS - len(board_lines)))
-        else:
-            for i, line in enumerate(board_lines):
-                # Ensure each line has exactly COLS characters
-                if len(line) != COLS:
-                    valid = False
-                    # Pad or truncate the line to match COLS
-                    if len(line) < COLS:
-                        board_lines[i] = line + "□" * (COLS - len(line))
-                    else:
-                        board_lines[i] = line[:COLS]
+    except requests.exceptions.RequestException as e:
+        print(f"GitHub API error: {e}")
+        return False
 
-        # If completely invalid (e.g., empty bio), seed a default glider board
-        if not valid and len("".join(board_lines).strip()) == 0:
-            board_lines = [
-                "□■□□□□□□□□□□□□□□□□",
-                "□□■□□□□□□□□□□□□□□□",
-                "■■■□□□□□□□□□□□□□□□",
-                "□□□□□□□□□□□□□□□□□□",
-                "□□□□□□□□□□□□□□□□□□",
-                "□□□□□□□□□□□□□□□□□□",
-                "□□□□□□□□□□□□□□□□□□",
-                "□□□□□□□□□□□□□□□□□□",
-            ]
 
-        try:
-            # Create a 2D grid directly for the lifegame package
-            # The lifegame package expects a 2D list of integers (0 for dead, 1 for alive)
-            # We convert "■" to 1 (alive) and "□" to 0 (dead)
-            grid = []
-            for line in board_lines:
-                row = [1 if cell == "■" else 0 for cell in line]
-                grid.append(row)
+def main():
+    # Parse command-line arguments
+    args = parse_arguments()
 
-            # Debug output to see what we're passing to lifegame
-            print(
-                "Input grid dimensions:", len(grid), "rows x", len(grid[0]), "columns"
+    # Apply random-by-day option if specified
+    if args.random_by_day:
+        random_options = get_random_options_by_day()
+        print("Random options selected based on day of year:")
+        print(f"  - Rule set: {random_options['rules']}")
+        print(f"  - Display mode: {random_options['display']}")
+
+        # Override the command-line arguments
+        args.rules = random_options["rules"]
+        args.display = random_options["display"]
+
+    # Check if grid dimensions exceed max length
+    total_chars = args.rows * args.columns
+    if total_chars > args.max_length:
+        print(
+            f"Warning: Grid dimensions ({args.rows}x{args.columns}={total_chars}) exceed max length ({args.max_length})."
+        )
+        print(
+            f"The last {total_chars - args.max_length} characters will be treated as dead cells."
+        )
+
+    # Read PAT from environment variable "PAT_GITHUB"
+    pat = os.getenv("PAT_GITHUB")
+    if not pat and not args.preview:
+        # Fall back to prompt if not set, without echoing the input.
+        pat = getpass.getpass("Enter your GitHub PAT (it will not be echoed): ")
+
+    try:
+        # Initialize the grid
+        grid = None
+
+        # Option 1: Load from file
+        if args.input:
+            print(f"Loading grid from file: {args.input}")
+            grid = load_grid_from_file(args.input)
+
+            # Resize the grid if necessary
+            if len(grid) != args.rows or len(grid[0]) != args.columns:
+                print(
+                    f"Resizing grid from {len(grid)}x{len(grid[0])} to {args.rows}x{args.columns}"
+                )
+
+                # Create a new grid with the specified dimensions
+                new_grid = [[0 for _ in range(args.columns)] for _ in range(args.rows)]
+
+                # Copy as much of the original grid as possible
+                for y in range(min(len(grid), args.rows)):
+                    for x in range(min(len(grid[0]), args.columns)):
+                        new_grid[y][x] = grid[y][x]
+
+                grid = new_grid
+
+        # Option 2: Generate random board
+        elif args.randomize_board is not None:
+            density = args.randomize_board
+            print(f"Generating random board with density: {density}")
+            grid = generate_random_grid(args.columns, args.rows, density)
+
+        # Option 3: Fetch from GitHub bio (default)
+        elif not args.preview:
+            # GET /user to read current bio
+            headers = {
+                "Accept": "application/vnd.github+json",
+                "Authorization": f"Bearer {pat}",
+            }
+            response = requests.get("https://api.github.com/user", headers=headers)
+            response.raise_for_status()
+
+            user_data = response.json()
+            current_bio = user_data.get("bio") or ""
+
+            # Parse the bio into a grid
+            grid, is_valid = parse_bio_to_grid(current_bio, args.rows, args.columns)
+
+            if not is_valid:
+                print("Warning: Bio format was invalid or empty. Using default grid.")
+
+        # If we still don't have a grid (e.g., preview mode without other options),
+        # create a default glider
+        if grid is None:
+            print("Using default glider grid")
+            grid = [[0 for _ in range(args.columns)] for _ in range(args.rows)]
+
+            # Add a glider in the top-left corner if there's enough space
+            if args.columns >= 3 and args.rows >= 3:
+                grid[0][1] = 1
+                grid[1][2] = 1
+                grid[2][0] = grid[2][1] = grid[2][2] = 1
+
+        # Debug output to show grid dimensions
+        print(f"Input grid dimensions: {len(grid)} rows x {len(grid[0])} columns")
+
+        # Preview mode: show multiple iterations without updating bio
+        if args.preview:
+            iterations = args.preview
+            final_grid = preview_evolution(
+                grid,
+                iterations=iterations,
+                rule_set=args.rules,
+                display_mode=args.display,
             )
 
-            # 3) Evolve the grid by one step using lifegame's step function
-            # The step function applies Conway's Game of Life rules to evolve the grid
-            # We use the "standard" rule set (B3/S23) which is Conway's original rules
-            new_grid = step(grid, rule_set="standard")
-
-            # 4) Convert the new grid back to a string using lifegame's render_full function
-            # The render_full function converts the grid to a string with "█" for alive cells
-            # and spaces for dead cells
-            new_bio = render_full(new_grid)
-
-            # Convert the rendered output back to the format used in the bio
-            # Replace "█" with "■" and spaces with "□" to maintain the original format
-            new_bio = new_bio.replace("█", "■").replace(" ", "□")
-
-            # Debug output to see the result
-            print("\nOutput grid:")
-            print(new_bio)
-
-            # 5) PATCH /user to update the bio
-            payload = {"bio": new_bio}
-            patch_response = requests.patch(
-                "https://api.github.com/user", headers=headers, json=payload
+            # Format the final grid for display
+            formatted_grid = format_grid_for_bio(
+                final_grid, args.display, args.max_length
             )
-            patch_response.raise_for_status()  # Raise an exception for HTTP errors
+            print("\nFinal grid (formatted for bio):")
+            print(formatted_grid)
 
-            print("\nBio updated successfully!")
+            # Exit without updating bio
+            return
 
-        except ValueError as e:
-            print(f"Error processing the grid: {e}")
-            sys.exit(1)
+        # Normal mode: evolve the grid one step and update bio
+        new_grid = step(grid, rule_set=args.rules)
 
+        # Format the grid for the bio
+        new_bio = format_grid_for_bio(new_grid, args.display, args.max_length)
+
+        # Debug output to show the result
+        print("\nOutput grid:")
+        print(new_bio)
+
+        # Update the GitHub bio
+        update_github_bio(pat, new_bio)
+
+    except ValueError as e:
+        print(f"Error processing the grid: {e}")
+        sys.exit(1)
     except requests.exceptions.RequestException as e:
         print(f"GitHub API error: {e}")
         sys.exit(1)
