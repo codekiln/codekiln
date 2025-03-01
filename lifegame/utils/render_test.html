@@ -1,0 +1,521 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GitHub Bio Block IDE (Alt Ref + Darkness)</title>
+  <style>
+    /* Force the same font stack GitHub uses in bios */
+    body {
+      font-family: -apple-system, "system-ui", "Segoe UI",
+                   "Noto Sans", Helvetica, Arial, sans-serif,
+                   "Apple Color Emoji", "Segoe UI Emoji";
+      margin: 20px;
+      line-height: 1.5;
+    }
+
+    #measure-span {
+      position: absolute;
+      visibility: hidden;
+      white-space: nowrap;
+      font-size: 16px;
+      top: -9999px;
+    }
+
+    .char-button {
+      display: inline-block;
+      margin: 4px;
+      padding: 4px 8px;
+      cursor: pointer;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      background: #f0f0f0;
+      user-select: none;
+    }
+    .char-button:hover {
+      background: #e0e0e0;
+    }
+
+    #results, #altResults {
+      margin-bottom: 1em;
+    }
+
+    /* The preview box that simulates GitHub bio wrapping */
+    #preview {
+      max-width: 296px;          /* approximate GitHub's layout constraint */
+      margin-top: 1em;
+      padding: 8px;
+      border: 1px solid #ccc;
+      white-space: pre-wrap;     /* preserve newlines + allow wrapping */
+      word-wrap: break-word;     /* older name for break-word */
+      overflow-wrap: break-word; /* modern name for break-word */
+    }
+
+    #debug {
+      margin-top: 1em;
+      padding: 1em;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+      max-height: 200px;
+      overflow-y: auto;
+      white-space: pre-wrap;
+    }
+
+    #copyButton {
+      margin-top: 8px;
+      padding: 6px 12px;
+      cursor: pointer;
+      border: 1px solid #aaa;
+      border-radius: 4px;
+      background: #f0f0f0;
+    }
+    #copyButton:hover {
+      background: #e0e0e0;
+    }
+
+    #altRefContainer {
+      margin: 1em 0;
+      padding: 1em;
+      border: 1px solid #ccc;
+      background: #fafafa;
+    }
+
+    .inline-label {
+      font-weight: bold;
+      margin-right: 6px;
+    }
+
+    #allScannedContainer {
+      margin-top: 2em;
+      padding: 1em;
+      border: 1px solid #ccc;
+      background: #fefefe;
+      max-height: 200px;
+      overflow-y: auto;
+      font-size: 14px;
+    }
+    .all-scanned-item {
+      display: inline-block;
+      width: 2em;
+      margin: 2px;
+      text-align: center;
+      cursor: default;
+      border: 1px solid #eee;
+      border-radius: 4px;
+      user-select: text;
+    }
+    .all-scanned-item:hover {
+      border-color: #ccc;
+      background: #fafafa;
+    }
+  </style>
+</head>
+<body>
+
+<h1>GitHub Bio “Block IDE” + Alternate Reference &amp; Darkness</h1>
+<p>
+  This page finds glyphs that match <strong>31 copies</strong> of 
+  <code>▘</code>, and also lets you scan an <em>alternate reference</em> 
+  (any glyph repeated <code>N</code> times) with a chosen tolerance, 
+  returning the top <code>N</code> closest by width plus any within 
+  that tolerance. We also do a simple “darkness” measure via an offscreen 
+  <code>&lt;canvas&gt;</code> to help identify fuller/denser glyphs.
+</p>
+
+<!-- Hidden span used for measuring widths -->
+<span id="measure-span"></span>
+<!-- Hidden canvas for measuring “darkness” -->
+<canvas id="darknessCanvas" width="24" height="24" style="display:none;"></canvas>
+
+<!-- 1) Default reference results: 31 copies of ▘ -->
+<h2>1) Default Reference (31 × ▘, ±0.5px tolerance)</h2>
+<div id="results"></div>
+
+<div>
+  <label class="inline-label" for="pattern">Pattern:</label>
+  <input type="text" id="pattern" value="" />
+
+  <label class="inline-label" for="copies">Consecutive Copies:</label>
+  <input type="number" id="copies" min="1" max="160" value="31" style="width:60px;" />
+  <small>(limit 160 total glyphs)</small>
+</div>
+
+<div id="preview"></div>
+<button id="copyButton">Copy to Clipboard</button>
+
+<div id="debug"></div>
+
+<!-- 2) Alternate Reference scanning section -->
+<div id="altRefContainer">
+  <h2>2) Alternate Reference (Adjust Tolerance, Top N, &amp; Darkness)</h2>
+  <p>Enter any glyph and how many consecutive copies. Then pick a tolerance 
+     (in px) and how many “closest by width” to list. After scanning, 
+     you’ll see two lists: 
+     <strong>“Within Tolerance”</strong> (sorted by descending darkness), 
+     and <strong>“Top N Closest”</strong> (sorted by ascending width diff).
+  </p>
+  
+  <label class="inline-label" for="altRefGlyph">Alt Ref Glyph:</label>
+  <input type="text" id="altRefGlyph" value="▘" style="width:40px;" />
+
+  <label class="inline-label" for="altRefCount">Copies:</label>
+  <input type="number" id="altRefCount" value="30" min="1" max="9999" style="width:60px;" />
+
+  <label class="inline-label" for="altTolerance">Tolerance:</label>
+  <input type="number" step="0.1" id="altTolerance" value="0.5" style="width:60px;" />
+
+  <label class="inline-label" for="altTopN">Top N:</label>
+  <input type="number" id="altTopN" value="10" min="1" max="500" style="width:60px;" />
+
+  <button id="scanAltRefBtn">Scan Alt Ref</button>
+
+  <div id="altResults"></div>
+</div>
+
+<!-- 3) Show all code points scanned -->
+<div id="allScannedContainer"></div>
+
+<script>
+/***********************************************************
+ * 0) GLOBALS & UTILS
+ ***********************************************************/
+const MAX_GLYPHS = 160;  // GitHub bio typical character limit
+
+const measureSpan = document.getElementById("measure-span");
+function measureWidth(str) {
+  measureSpan.textContent = str;
+  return measureSpan.getBoundingClientRect().width;
+}
+
+// We'll gather code points in certain Unicode blocks
+const codePoints = [];
+function addRange(start, end) {
+  for (let cp = start; cp <= end; cp++) {
+    if (cp < 0x20) continue; // skip control chars
+    codePoints.push(cp);
+  }
+}
+// Box Drawing
+addRange(0x2500, 0x257F);
+// Block Elements
+addRange(0x2580, 0x259F);
+// Geometric Shapes
+addRange(0x25A0, 0x25FF);
+// Misc. Symbols & Dingbats (some squares/circles)
+addRange(0x2B00, 0x2BFF);
+// Sample small slice of CJK
+addRange(0x4E00, 0x4E5F);
+
+/**
+ * A naive measure of “darkness”: 
+ * 1) Render the glyph in a small offscreen canvas (24×24).
+ * 2) Count how many pixels are non‐white (r<255||g<255||b<255).
+ * 3) Return fraction in [0..1].
+ *    - Very approximate; depends on subpixel anti‐aliasing, etc.
+ */
+const darknessCanvas = document.getElementById("darknessCanvas");
+const ctx = darknessCanvas.getContext("2d");
+function measureDarkness(glyph) {
+  // Clear canvas
+  ctx.clearRect(0, 0, darknessCanvas.width, darknessCanvas.height);
+
+  // We can set a fixed font size that fits in 24×24. 
+  // Make sure to use the same font stack as in body.
+  ctx.font = "16px -apple-system, system-ui, Segoe UI, Noto Sans, Helvetica, Arial, sans-serif";
+  ctx.fillStyle = "#000000";
+  ctx.fillText(glyph, 2, 18); // x=2, y=18 so it’s fully on-canvas
+
+  let imageData = ctx.getImageData(0, 0, darknessCanvas.width, darknessCanvas.height);
+  let data = imageData.data;
+  let nonWhite = 0;
+  for (let i=0; i<data.length; i+=4) {
+    let r = data[i+0];
+    let g = data[i+1];
+    let b = data[i+2];
+    // A very naive check: if not pure white, count it
+    if (r<255 || g<255 || b<255) {
+      nonWhite++;
+    }
+  }
+  // nonWhite is count of *pixels* that have any color or anti-aliasing
+  // but each pixel has 4 sub-values. We advanced i by 4. So nonWhite 
+  // is the # of “pixels,” not sub-pixels.
+  let totalPixels = darknessCanvas.width * darknessCanvas.height;
+  return nonWhite / totalPixels;
+}
+
+/***********************************************************
+ * 1) DEFAULT REF: 31 copies of "▘"
+ ***********************************************************/
+const REF_GLYPH = "▘";
+const REF_COUNT = 31;
+const referenceWidth = measureWidth(REF_GLYPH.repeat(REF_COUNT));
+
+// We’ll store default matched chars in an array of {char, diff, dark}
+const defaultMatched = [];
+codePoints.forEach(cp => {
+  const ch = String.fromCodePoint(cp);
+  // measure width diff
+  let testStr = ch.repeat(REF_COUNT);
+  let w = measureWidth(testStr);
+  let diff = Math.abs(w - referenceWidth);
+
+  // check if within ±0.5 for default
+  if (diff <= 0.5) {
+    // measure darkness
+    let dark = measureDarkness(ch);
+    defaultMatched.push({char: ch, diff, dark});
+  }
+});
+
+/***********************************************************
+ * 2) LETTER -> CHAR MAPS for pattern
+ ***********************************************************/
+let nextLetterCode = 65; // 'A'
+const charToLetter = new Map();
+const letterToChar = new Map();
+
+/***********************************************************
+ * 3) RENDER DEFAULT MATCHES
+ ***********************************************************/
+const resultsDiv   = document.getElementById("results");
+const patternInput = document.getElementById("pattern");
+const copiesInput  = document.getElementById("copies");
+const previewDiv   = document.getElementById("preview");
+const debugDiv     = document.getElementById("debug");
+const copyButton   = document.getElementById("copyButton");
+
+/**
+ * Creates clickable buttons for a list of items: {char, diff, dark}
+ * labelPrefix is added to each button's title.
+ */
+function createGlyphButtons(container, itemList, labelPrefix) {
+  container.innerHTML = ""; // clear old results
+  itemList.forEach(item => {
+    const btn = document.createElement("span");
+    btn.className = "char-button";
+    btn.textContent = item.char;
+    let title = `${labelPrefix} U+${item.char.codePointAt(0).toString(16).toUpperCase()}`;
+    if (typeof item.diff === 'number') {
+      title += ` (diff=${item.diff.toFixed(2)}px)`;
+    }
+    if (typeof item.dark === 'number') {
+      title += ` darkness=${(item.dark*100).toFixed(0)}%`;
+    }
+    btn.title = title;
+
+    btn.addEventListener("click", () => {
+      assignGlyphToPattern(item.char);
+    });
+    container.appendChild(btn);
+  });
+}
+
+// Sort the default matches ascending by their code point, just to have a stable order
+defaultMatched.sort((a,b) => {
+  if (a.char < b.char) return -1;
+  if (a.char > b.char) return 1;
+  return 0;
+});
+createGlyphButtons(resultsDiv, defaultMatched, "Matches 31×▘ =>");
+
+/***********************************************************
+ * 4) PATTERN + PREVIEW
+ ***********************************************************/
+patternInput.addEventListener("input", updatePreview);
+copiesInput.addEventListener("input", updatePreview);
+copyButton.addEventListener("click", copyToClipboard);
+
+function assignGlyphToPattern(glyph) {
+  if (!charToLetter.has(glyph)) {
+    if (nextLetterCode > 90) {
+      alert("No more letters available (A-Z).");
+      return;
+    }
+    const letter = String.fromCharCode(nextLetterCode++);
+    charToLetter.set(glyph, letter);
+    letterToChar.set(letter, glyph);
+  }
+
+  const letter = charToLetter.get(glyph);
+  const currentPattern = patternInput.value;
+  const newPattern = currentPattern + letter;
+
+  const copies = parseInt(copiesInput.value, 10) || 1;
+  const totalGlyphs = newPattern.length * copies;
+  if (totalGlyphs > MAX_GLYPHS) {
+    alert(`Cannot exceed ${MAX_GLYPHS} total glyphs. Adding this row = ${totalGlyphs}.`);
+    return;
+  }
+
+  patternInput.value = newPattern;
+  updatePreview();
+}
+
+function updatePreview() {
+  let pat = patternInput.value.toUpperCase();
+  patternInput.value = pat;
+
+  const copies = parseInt(copiesInput.value, 10) || 1;
+
+  const validLetters = [];
+  for (const letter of pat) {
+    if (letterToChar.has(letter)) {
+      validLetters.push(letter);
+    }
+  }
+
+  let totalGlyphs = validLetters.length * copies;
+  if (totalGlyphs > MAX_GLYPHS) {
+    alert(`Truncating pattern to avoid > ${MAX_GLYPHS} glyphs.`);
+    while (validLetters.length * copies > MAX_GLYPHS) {
+      validLetters.pop();
+    }
+  }
+  patternInput.value = validLetters.join("");
+
+  let out = "";
+  for (const letter of patternInput.value) {
+    const glyph = letterToChar.get(letter);
+    out += glyph.repeat(copies);
+  }
+
+  previewDiv.textContent = out;
+
+  // Debug info
+  debugDiv.textContent =
+    `DEFAULT REF: 31×"▘" => width≈${referenceWidth.toFixed(2)} px\n` +
+    `Matches for default ref (±0.5px): ${defaultMatched.length}\n\n` +
+    `Pattern: ${patternInput.value}\n` +
+    `Copies per letter: ${copies}\n` +
+    `Total glyphs in preview: ${patternInput.value.length * copies}\n\n` +
+    `Letter->Char map:\n` +
+    Array.from(letterToChar.entries())
+      .map(([L, g]) => `${L} => ${g}`)
+      .join("\n");
+}
+updatePreview();
+
+function copyToClipboard() {
+  const textToCopy = previewDiv.textContent;
+  if (!textToCopy) {
+    alert("No text to copy—your pattern is empty!");
+    return;
+  }
+  navigator.clipboard.writeText(textToCopy)
+    .then(() => {
+      alert("Preview text copied to clipboard!");
+    })
+    .catch(err => {
+      console.error("Failed to copy:", err);
+      alert("Failed to copy text. See console for details.");
+    });
+}
+
+/***********************************************************
+ * 5) ALTERNATE REF SCAN with TOLERANCE + "DARKNESS"
+ ***********************************************************/
+const altRefGlyphInput  = document.getElementById("altRefGlyph");
+const altRefCountInput  = document.getElementById("altRefCount");
+const altToleranceInput = document.getElementById("altTolerance");
+const altTopNInput      = document.getElementById("altTopN");
+const scanAltRefBtn     = document.getElementById("scanAltRefBtn");
+const altResultsDiv     = document.getElementById("altResults");
+
+scanAltRefBtn.addEventListener("click", runAltScan);
+
+function runAltScan() {
+  const g         = altRefGlyphInput.value.trim();
+  const n         = parseInt(altRefCountInput.value, 10) || 1;
+  const tolerance = parseFloat(altToleranceInput.value) || 0.5;
+  const topN      = parseInt(altTopNInput.value, 10) || 10;
+
+  if (!g) {
+    alert("Please provide a valid alternate reference glyph.");
+    return;
+  }
+  if (n < 1 || n > 9999) {
+    alert("Please provide a valid count (1..9999).");
+    return;
+  }
+  if (topN < 1) {
+    alert("Top N must be >= 1.");
+    return;
+  }
+
+  const altRefStr   = g.repeat(n);
+  const altRefWidth = measureWidth(altRefStr);
+
+  // Build a list of { char, diff, dark }
+  // diff = |candidateWidth - altRefWidth|
+  // dark = measureDarkness(char)
+  const altScanned = [];
+  codePoints.forEach(cp => {
+    const ch = String.fromCodePoint(cp);
+    let w = measureWidth(ch.repeat(n));
+    let diff = Math.abs(w - altRefWidth);
+    let dark = measureDarkness(ch);
+    altScanned.push({char: ch, diff, dark});
+  });
+
+  // Sort ascending by diff
+  altScanned.sort((a,b) => a.diff - b.diff);
+
+  // 1) All within tolerance, sorted by descending darkness
+  const withinTol = altScanned.filter(x => x.diff <= tolerance);
+  withinTol.sort((a,b) => b.dark - a.dark);
+
+  // 2) Top N overall by width difference
+  const topNList = altScanned.slice(0, topN);
+
+  // Render
+  altResultsDiv.innerHTML = `
+    <p>Reference: "${g}"×${n} => width≈${altRefWidth.toFixed(2)}px<br>
+       Tolerance: ±${tolerance}px, Top N: ${topN}</p>`;
+
+  // A) Within tolerance
+  if (withinTol.length > 0) {
+    const tolTitle = document.createElement("h3");
+    tolTitle.textContent = `Within tolerance (diff ≤ ${tolerance}), sorted by darkness: ${withinTol.length}`;
+    altResultsDiv.appendChild(tolTitle);
+
+    const tolDiv = document.createElement("div");
+    altResultsDiv.appendChild(tolDiv);
+    createGlyphButtons(tolDiv, withinTol, `[diff ≤ ${tolerance}]`);
+  } else {
+    const noneTol = document.createElement("p");
+    noneTol.textContent = "No glyphs found within that tolerance.";
+    altResultsDiv.appendChild(noneTol);
+  }
+
+  // B) Top N by width difference
+  const topTitle = document.createElement("h3");
+  topTitle.textContent = `Top ${topN} closest by diff:`;
+  altResultsDiv.appendChild(topTitle);
+
+  const topDiv = document.createElement("div");
+  altResultsDiv.appendChild(topDiv);
+  createGlyphButtons(topDiv, topNList, "[closest by diff]");
+}
+
+/***********************************************************
+ * 6) SHOW ALL CODE POINTS SCANNED
+ ***********************************************************/
+const allScannedContainer = document.getElementById("allScannedContainer");
+{
+  const info = document.createElement("p");
+  info.textContent = `Scanned ${codePoints.length} code points: (click/hover doesn't do anything here, just for reference)`;
+  allScannedContainer.appendChild(info);
+
+  codePoints.forEach(cp => {
+    const ch = String.fromCodePoint(cp);
+    const span = document.createElement("span");
+    span.className = "all-scanned-item";
+    span.title = `U+${cp.toString(16).toUpperCase()}`;
+    span.textContent = ch;
+    allScannedContainer.appendChild(span);
+  });
+}
+</script>
+
+</body>
+</html>
