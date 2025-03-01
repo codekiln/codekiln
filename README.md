@@ -12,7 +12,7 @@ src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the
 
 ## Installation
 
-This repository includes a Conway's Game of Life implementation and a GitHub bio updater. For setup instructions, see [INSTALLATION.md](INSTALLATION.md).
+This repository includes a Conway's Game of Life implementation and a GitHub bio updater (see the adjacent bio for an example). For setup instructions, see [INSTALLATION.md](INSTALLATION.md). For detailed usage instructions and command-line options, see [USAGE.md](USAGE.md).
 
 ### Skills
 
