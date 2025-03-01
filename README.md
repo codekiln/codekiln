@@ -10,9 +10,9 @@ src="https://img.shields.io/github/followers/codekiln?logo=github&style=for-the-
 <a href="https://www.x.com/codekiln" target="_blank" rel="noreferrer"><img
 src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the-badge&labelColor=000000" /></a> &nbsp;
 
-## Installation
+## Bio - The Game of Life
 
-This repository includes a Conway's Game of Life implementation and a GitHub bio updater (see the adjacent bio for an example). For setup instructions, see [INSTALLATION.md](INSTALLATION.md). For detailed usage instructions and command-line options, see [USAGE.md](USAGE.md).
+Just for fun, this repository includes a Conway's Game of Life implementation and a GitHub bio updater (see the adjacent bio for an example). For setup instructions, see [INSTALLATION.md](INSTALLATION.md). For detailed usage instructions and command-line options, see [USAGE.md](USAGE.md).
 
 ### Skills
 

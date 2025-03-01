@@ -30,7 +30,26 @@ python conway-bio.py --columns 30
 python conway-bio.py --max-length 100
 ```
 
-**Note:** GitHub bio has a maximum character limit of 160. If your grid exceeds this limit, the script will truncate it and display a warning.
+**Note:** GitHub bio has a maximum character limit of 160. If your grid exceeds this limit, the script will automatically adjust the dimensions to fit within the limit while trying to maintain the aspect ratio. You'll see a warning message with the adjusted dimensions.
+
+### Bio Length Handling
+
+The script includes smart handling of bio length limitations:
+
+1. **Automatic Dimension Adjustment**: If your specified grid dimensions would exceed the maximum bio length, the script automatically calculates and uses safe dimensions.
+
+2. **Display Mode Optimization**: When using half display mode, the script can fit approximately twice as many cells since each row is half the height.
+
+3. **Truncation**: If necessary, the script will truncate the bio to ensure it stays within GitHub's character limit.
+
+4. **Clear Warnings**: The script provides clear warnings when adjustments are made, showing both the original and adjusted dimensions.
+
+Example of automatic adjustment:
+```bash
+# This would exceed the 160 character limit (10×20=200)
+python conway-bio.py --rows 10 --columns 20
+# The script will automatically adjust to dimensions that fit
+```
 
 ### Game Rules
 

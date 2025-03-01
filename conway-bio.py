@@ -163,6 +163,53 @@ def get_random_options_by_day():
     }
 
 
+def calculate_safe_dimensions(rows, columns, max_length, display_mode="full"):
+    """
+    Calculate safe dimensions that will fit within the maximum length.
+
+    Args:
+        rows (int): Requested number of rows
+        columns (int): Requested number of columns
+        max_length (int): Maximum length of the bio
+        display_mode (str): Display mode to use (full or half)
+
+    Returns:
+        tuple: (safe_rows, safe_columns) that will fit within max_length
+    """
+    total_chars = rows * columns
+
+    # If the dimensions already fit, return them unchanged
+    if total_chars <= max_length:
+        return rows, columns
+
+    # Calculate maximum dimensions that would fit
+    if display_mode == "half":
+        # In half mode, we can fit approximately twice as many cells
+        # since each row is half the height
+        effective_max = max_length * 2
+
+        # Try to maintain the requested number of columns
+        if columns <= effective_max:
+            safe_rows = min(rows, effective_max // columns)
+            safe_columns = columns
+        else:
+            # If columns alone exceed the limit, reduce them
+            safe_rows = 1
+            safe_columns = effective_max
+    else:
+        # In full mode, calculate dimensions that would fit
+        if rows <= 1:
+            # Single row case
+            safe_rows = 1
+            safe_columns = min(columns, max_length)
+        else:
+            # Try to maintain aspect ratio
+            safe_rows = min(rows, max(1, int(max_length / columns)))
+            safe_columns = min(columns, max_length // safe_rows)
+
+    return safe_rows, safe_columns
+
+
 def load_grid_from_file(file_path):
     """
     Load a grid from a file.
@@ -264,9 +311,10 @@ def format_grid_for_bio(grid, display_mode="full", max_length=DEFAULT_MAX_LENGTH
         formatted_grid = formatted_grid.replace("▀", "■").replace("▄", "■")
 
     # Ensure the bio doesn't exceed the maximum length
-    if len(formatted_grid.replace("\n", "")) > max_length:
+    total_chars = len(formatted_grid.replace("\n", ""))
+    if total_chars > max_length:
         print(f"Warning: Bio exceeds maximum length of {max_length} characters.")
-        print(f"Current length: {len(formatted_grid.replace('\\n', ''))} characters.")
+        print(f"Current length: {total_chars} characters.")
 
         # Truncate the bio if necessary
         lines = formatted_grid.split("\n")
@@ -286,6 +334,7 @@ def format_grid_for_bio(grid, display_mode="full", max_length=DEFAULT_MAX_LENGTH
 
         formatted_grid = "\n".join(truncated_lines)
         print(f"Bio truncated to {len(formatted_grid.replace('\\n', ''))} characters.")
+        print("Some cells have been removed to fit within GitHub's character limit.")
 
     return formatted_grid
 
@@ -377,9 +426,22 @@ def main():
         print(
             f"Warning: Grid dimensions ({args.rows}x{args.columns}={total_chars}) exceed max length ({args.max_length})."
         )
-        print(
-            f"The last {total_chars - args.max_length} characters will be treated as dead cells."
+
+        # Calculate safe dimensions
+        safe_rows, safe_columns = calculate_safe_dimensions(
+            args.rows, args.columns, args.max_length, args.display
         )
+
+        print(
+            f"Adjusting dimensions from {args.rows}x{args.columns} to {safe_rows}x{safe_columns}"
+        )
+        print(
+            f"The adjusted dimensions will fit within the {args.max_length} character limit."
+        )
+
+        # Update the arguments with safe dimensions
+        args.rows = safe_rows
+        args.columns = safe_columns
 
     # Read PAT from environment variable "PAT_GITHUB"
     pat = os.getenv("PAT_GITHUB")
