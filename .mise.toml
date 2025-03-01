@@ -1,0 +1,21 @@
+[tools]
+python = "3.12"
+uv = "latest"
+
+[env]
+PYTHONPATH = ".:.venv/lib/python3.12/site-packages:./lifegame"
+PROJECT_ROOT = "."
+# Use mise's built-in virtualenv support
+_.python.venv = { path = ".venv", create = true }
+
+[tasks]
+# Install the lifegame package
+install-lifegame = { run = "cd lifegame && uv pip install -e '.[dev]'" }
+# Install the root package and its dependencies
+install = { run = "uv pip install -e '.[dev]'", depends = ["install-lifegame"] }
+# Install specific dependencies directly
+install-deps = { run = "uv pip install requests python-dotenv pytest" }
+# Run tests
+test = { run = "python -m pytest" }
+# Run the conway-bio script
+run = { run = "python conway-bio.py" } 

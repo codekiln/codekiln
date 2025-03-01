@@ -10,6 +10,10 @@ src="https://img.shields.io/github/followers/codekiln?logo=github&style=for-the-
 <a href="https://www.x.com/codekiln" target="_blank" rel="noreferrer"><img
 src="https://img.shields.io/badge/follow-%40codekiln-0891b2?logo=x&style=for-the-badge&labelColor=000000" /></a> &nbsp;
 
+## Installation
+
+This repository includes a Conway's Game of Life implementation and a GitHub bio updater. For setup instructions, see [INSTALLATION.md](INSTALLATION.md).
+
 ### Skills
 
 <a href="https://developer.mozilla.org/en-US/docs/Web/JavaScript" target="_blank" rel="noreferrer"><picture>

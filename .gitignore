@@ -30,6 +30,10 @@ venv/
 ENV/
 .python-version
 
+# mise and uv
+.mise/
+.uv/
+
 # Vim
 [._]*.s[a-v][a-z]
 [._]*.sw[a-p]
@@ -45,3 +49,6 @@ Sessionx.vim
 repomix-output.txt
 
 output.txt
+
+# Keep .vscode settings
+!.vscode/
