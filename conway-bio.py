@@ -13,7 +13,7 @@ The script:
 
 Command-line options:
   --rules {standard,daynight,highlife}  Rule set to use (default: standard)
-  --display {full,half}                 Display mode to use (default: full)
+  --display {full,half}                 Display mode to use (default: half)
   --random-by-day                       Select options based on day of year
   --randomize-board [DENSITY]           Generate a random initial board
   --preview [ITERATIONS]                Preview evolution without updating bio
@@ -74,9 +74,9 @@ def parse_arguments():
     parser.add_argument(
         "--display",
         type=str,
-        default="full",
+        default="half",
         choices=["full", "half"],
-        help="Display mode to use (default: full)",
+        help="Display mode to use (default: half)",
     )
 
     # Random options
@@ -293,21 +293,21 @@ def parse_bio_to_grid(current_bio, rows, cols):
         # Create a default glider in the top-left corner
         board_lines = ["□" * cols for _ in range(rows)]
         if cols >= 3 and rows >= 3:
-            board_lines[0] = "□■□" + "□" * (cols - 3)
-            board_lines[1] = "□□■" + "□" * (cols - 3)
-            board_lines[2] = "■■■" + "□" * (cols - 3)
+            board_lines[0] = "□▀□" + "□" * (cols - 3)
+            board_lines[1] = "□□▀" + "□" * (cols - 3)
+            board_lines[2] = "▀▀▀" + "□" * (cols - 3)
 
     # Create a 2D grid directly for the lifegame package
-    # Convert "■" to 1 (alive) and "□" to 0 (dead)
+    # Convert "■" to 1 (alive), "▀" and "▄" to 1 (alive), and "□" to 0 (dead)
     grid = []
     for line in board_lines:
-        row = [1 if cell == "■" else 0 for cell in line]
+        row = [1 if cell in "■▀▄" else 0 for cell in line]
         grid.append(row)
 
     return grid, valid
 
 
-def format_grid_for_bio(grid, display_mode="full", max_length=DEFAULT_MAX_LENGTH):
+def format_grid_for_bio(grid, display_mode="half", max_length=DEFAULT_MAX_LENGTH):
     """
     Format a grid for display in a GitHub bio.
 
@@ -326,12 +326,12 @@ def format_grid_for_bio(grid, display_mode="full", max_length=DEFAULT_MAX_LENGTH
     rendered_grid = render_func(grid)
 
     # Convert the rendered output to the format used in the bio
-    # Replace "█" with "■" and spaces with "□"
-    formatted_grid = rendered_grid.replace("█", "■").replace(" ", "□")
-
-    # For half-block mode, also replace the half blocks
-    if display_mode == "half":
-        formatted_grid = formatted_grid.replace("▀", "■").replace("▄", "■")
+    if display_mode == "full":
+        # For full mode, replace "█" with "■" and spaces with "□"
+        formatted_grid = rendered_grid.replace("█", "■").replace(" ", "□")
+    else:
+        # For half mode, keep the half blocks and replace spaces with "□"
+        formatted_grid = rendered_grid.replace(" ", "□")
 
     # Create a display version with newlines for preview purposes
     display_version = formatted_grid
