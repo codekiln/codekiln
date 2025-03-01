@@ -51,8 +51,8 @@ python conway-bio.py --rules daynight
 # Use full display mode with block characters (default)
 python conway-bio.py --display full
 
-# Use minimal display mode with white/black circle characters
-python conway-bio.py --display minimal
+# Use half display mode with white/black circle characters
+python conway-bio.py --display half
 ```
 
 ### Randomization
@@ -92,7 +92,7 @@ python conway-bio.py --rows 4 --columns 30 --rules highlife
 python conway-bio.py --random-by-day --preview 2
 
 # Use minimal display mode with a maximum length of 100 characters
-python conway-bio.py --display minimal --max-length 100
+python conway-bio.py --display half --max-length 100
 ```
 
 ## GitHub Bio Integration
