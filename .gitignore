@@ -52,3 +52,5 @@ output.txt
 
 # Keep .vscode settings
 !.vscode/
+
+.DS_Store
