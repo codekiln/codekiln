@@ -33,6 +33,22 @@ Please refactor the conway-bio.py script to use the lifegame package instead of 
 
 Make sure to test the script locally before committing.
 
+### Additional Task: Improve Development Environment Setup
+
+To make the development environment more efficient and elegant:
+
+1. Use `mise` to manage `uv` for Python environment management:
+   - Create a `.mise.toml` file in the root directory to configure Python and uv
+   - Configure mise to automatically activate the appropriate Python environment
+   - Set up uv to manage dependencies for the root application
+
+2. Convert from requirements.txt to pyproject.toml in the root:
+   - Create a pyproject.toml file that includes all necessary dependencies
+   - Configure the root project to include the lifegame package as a development dependency
+   - Ensure the conway-bio.py script can be run easily from the root directory
+
+This will create a more seamless development experience where you can run the conway-bio.py script directly from the root without manually activating environments or installing packages.
+
 ## Prompt 2: Update GitHub Actions Workflow
 
 Please update the GitHub Actions workflow (.github/workflows/conway-bio.yml) to use the lifegame package:

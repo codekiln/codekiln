@@ -8,18 +8,56 @@ This checklist is designed to guide the integration of the lifegame package with
 ## Checklist Items
 
 ### Prompt 1: Refactor Conway Bio to Use Lifegame Package
-- [ ] **Import Lifegame Functions:**  
+- [x] **Import Lifegame Functions:**  
 - Import necessary functions from the lifegame package (load_grid_from_string, step, render_full)
-- [ ] **Use Lifegame Grid Format:**  
+- [x] **Use Lifegame Grid Format:**  
 - Refactor the script to use the lifegame package's grid format and functions
-- [ ] **Maintain Functionality:**  
+- [x] **Maintain Functionality:**  
 - Ensure the script still fetches, parses, evolves, and updates the GitHub bio
-- [ ] **Error Handling:**  
+- [x] **Error Handling:**  
 - Add appropriate error handling for all operations
-- [ ] **GitHub Actions Compatibility:**  
+- [x] **GitHub Actions Compatibility:**  
 - Ensure the script works in the GitHub Actions environment
-- [ ] **Local Testing:**  
+- [x] **Improve Development Environment:**  
+- Set up mise to manage uv for Python environment management
+- Create a .mise.toml file in the root directory
+- Configure mise to automatically activate the Python environment
+- [x] **Modernize Dependency Management:**  
+- Convert from requirements.txt to pyproject.toml in the root
+- Include all necessary dependencies in pyproject.toml
+- Configure the root project to include lifegame as a development dependency
+- [x] **Local Testing:**  
 - Test the script locally before committing
+- [ ] **Commit:**  
+- **Stop and create a commit** with a commit message ending with:  
+ ```
+ #2 integrate lifegame with conway-bio
+ ```
+
+---
+
+### Prompt 1.5: Enhance Conway Bio with Rich Rendering Options
+- [ ] **Add Command-Line Arguments:**  
+- Use argparse to add command-line options
+- Expose rule variations (Standard Conway, Day & Night, HighLife)
+- Add display mode options (full block or half block characters)
+- Include grid initialization options (random, from file)
+- [ ] **Add Randomization Feature:**  
+- Implement a `--randomize` option that uses the day of the year
+- Use modulo arithmetic to select options based on the date
+- Create variety in bio updates over time
+- [ ] **Add Preview Mode:**  
+- Implement a `--preview` option to show evolution without updating GitHub bio
+- Allow displaying multiple iterations locally
+- [ ] **Ensure Backward Compatibility:**  
+- Maintain default behavior matching the original script
+- Ensure GitHub Actions workflow still works without changes
+- [ ] **Add Documentation:**  
+- Add help text to the script
+- Include code comments explaining the options
+- Update README.md with new features
+- [ ] **Test Enhanced Features:**  
+- Test the script locally with various option combinations
 - [ ] **Commit:**  
 - **Stop and create a commit** with a commit message ending with:  
  ```
