@@ -91,7 +91,7 @@ python conway-bio.py --rows 4 --columns 30 --rules highlife
 # Create a pattern that changes daily and preview it
 python conway-bio.py --random-by-day --preview 2
 
-# Use minimal display mode with a maximum length of 100 characters
+# Use half display mode with a maximum length of 100 characters
 python conway-bio.py --display half --max-length 100
 ```
 
@@ -102,4 +102,4 @@ For the script to update your GitHub bio, you need to:
 1. Create a GitHub Personal Access Token with the `user` scope
 2. Set it in a `.env` file as `PAT_GITHUB=your_token_here`
 
-See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions. 
+See [INSTALLATION.md](INSTALLATION.md) for detailed setup instructions.
