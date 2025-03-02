@@ -361,18 +361,9 @@ ALL_SEXTANT_MAPPINGS = [
 ]
 
 # Create dictionaries for each cell count
-CELLS_BY_COUNT = tuple(
+CELL_MAPPINGS_BY_ACTIVE_CELLS = tuple(
     create_sextant_dict(mappings) for mappings in SEXTANT_MAPPINGS_BY_COUNT
 )
-
-# For backward compatibility and readability, create named constants
-ZERO_CELLS = CELLS_BY_COUNT[0]
-ONE_CELL = CELLS_BY_COUNT[1]
-TWO_CELLS = CELLS_BY_COUNT[2]
-THREE_CELLS = CELLS_BY_COUNT[3]
-FOUR_CELLS = CELLS_BY_COUNT[4]
-FIVE_CELLS = CELLS_BY_COUNT[5]
-SIX_CELLS = CELLS_BY_COUNT[6]
 
 # Create the main mapping dictionary
 SEXTANT_CHAR_MAP = create_sextant_dict(ALL_SEXTANT_MAPPINGS)
