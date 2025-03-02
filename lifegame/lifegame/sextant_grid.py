@@ -12,7 +12,7 @@ from typing import (
     AbstractType,
 )
 from pydantic import BaseModel, Field, validator
-from abc import ABC, abstractmethod
+from abc import ABC, abstractmethod, isabstract
 
 
 # Define a Literal type for valid sextant coordinate strings
@@ -113,6 +113,21 @@ class SextantCellsActivated(ABC):
             SextantCoordMapping(coords, char)
             for coords, char in coords_to_chars.items()
         ]
+
+    @classmethod
+    def get_all_subclasses(cls) -> List[Type["SextantCellsActivated"]]:
+        """Returns all concrete subclasses of SextantCellsActivated, sorted by cell count."""
+        # Get all direct and indirect subclasses
+        all_subclasses = []
+        for subclass in cls.__subclasses__():
+            all_subclasses.append(subclass)
+            all_subclasses.extend(subclass.__subclasses__())
+
+        # Filter out any abstract classes
+        concrete_subclasses = [sc for sc in all_subclasses if not isabstract(sc)]
+
+        # Sort by cell count
+        return sorted(concrete_subclasses, key=lambda sc: sc.cell_count())
 
 
 # Define sextant characters grouped by cell count
@@ -438,16 +453,8 @@ def create_sextant_dict(
     return {frozenset(m.coordinate_strings): m.sextant_char.unicode for m in mappings}
 
 
-# List of sextant cell classes in order of cell count
-SEXTANT_CELL_CLASSES: List[Type[SextantCellsActivated]] = [
-    ZeroSextantCellsActivated,
-    OneSextantCellActivated,
-    TwoSextantCellsActivated,
-    ThreeSextantCellsActivated,
-    FourSextantCellsActivated,
-    FiveSextantCellsActivated,
-    SixSextantCellsActivated,
-]
+# Get all subclasses of SextantCellsActivated, sorted by cell count
+SEXTANT_CELL_CLASSES = SextantCellsActivated.get_all_subclasses()
 
 # Get mappings from each class
 SEXTANT_MAPPINGS_BY_COUNT: List[List[SextantCoordMapping]] = [
