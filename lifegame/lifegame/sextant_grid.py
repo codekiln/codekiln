@@ -28,6 +28,103 @@ class SextantRow(NamedTuple):
     row_3: SextantColumn
 
 
+class SextantChar(NamedTuple):
+    """Represents a sextant Unicode character with its description."""
+
+    unicode: str
+    description: str = ""
+
+    def __str__(self) -> str:
+        """Returns the Unicode character when the object is converted to string."""
+        return self.unicode
+
+
+# Define all sextant characters as named constants
+# Zero cells
+SEXTANT_EMPTY = SextantChar("\U0001FB93", "Empty sextant")
+
+# One cell
+SEXTANT_TOP_LEFT = SextantChar("\U0001FB00", "Top-left cell only")
+SEXTANT_TOP_RIGHT = SextantChar("\U0001FB01", "Top-right cell only")
+SEXTANT_MIDDLE_LEFT = SextantChar("\U0001FB03", "Middle-left cell only")
+SEXTANT_MIDDLE_RIGHT = SextantChar("\U0001FB07", "Middle-right cell only")
+SEXTANT_BOTTOM_LEFT = SextantChar("\U0001FB0F", "Bottom-left cell only")
+SEXTANT_BOTTOM_RIGHT = SextantChar("\U0001FB1E", "Bottom-right cell only")
+
+# Two cells
+SEXTANT_TOP_ROW = SextantChar("\U0001FB02", "Top row filled")
+SEXTANT_LEFT_TOP_TWO = SextantChar("\U0001FB04", "Left column, top two cells")
+SEXTANT_TOP_LEFT_MIDDLE_RIGHT = SextantChar("\U0001FB08", "Top-left and middle-right")
+SEXTANT_LEFT_TOP_BOTTOM = SextantChar("\U0001FB10", "Left column, top and bottom")
+SEXTANT_TOP_LEFT_BOTTOM_RIGHT = SextantChar("\U0001FB1F", "Top-left and bottom-right")
+SEXTANT_RIGHT_TOP_TWO = SextantChar("\U0001FB09", "Right column, top two cells")
+SEXTANT_TOP_RIGHT_BOTTOM_LEFT = SextantChar("\U0001FB11", "Top-right and bottom-left")
+SEXTANT_RIGHT_TOP_BOTTOM = SextantChar("\U0001FB20", "Right column, top and bottom")
+SEXTANT_MIDDLE_ROW = SextantChar("\U0001FB0B", "Middle row filled")
+SEXTANT_LEFT_BOTTOM_TWO = SextantChar("\U0001FB13", "Left column, bottom two cells")
+SEXTANT_MIDDLE_LEFT_BOTTOM_RIGHT = SextantChar(
+    "\U0001FB22", "Middle-left and bottom-right"
+)
+SEXTANT_MIDDLE_RIGHT_BOTTOM_LEFT = SextantChar(
+    "\U0001FB16", "Middle-right and bottom-left"
+)
+SEXTANT_RIGHT_BOTTOM_TWO = SextantChar("\U0001FB26", "Right column, bottom two cells")
+SEXTANT_BOTTOM_ROW = SextantChar("\U0001FB2D", "Bottom row filled")
+
+# Three cells
+SEXTANT_TOP_ROW_MIDDLE_LEFT = SextantChar("\U0001FB06", "Top row and middle-left")
+SEXTANT_TOP_ROW_MIDDLE_RIGHT = SextantChar("\U0001FB0A", "Top row and middle-right")
+SEXTANT_TOP_LEFT_MIDDLE_ROW = SextantChar("\U0001FB0C", "Top-left and middle row")
+SEXTANT_TOP_RIGHT_MIDDLE_ROW = SextantChar("\U0001FB0D", "Top-right and middle row")
+
+# Four cells
+SEXTANT_TOP_TWO_ROWS = SextantChar("\U0001FB0E", "Top two rows filled")
+SEXTANT_TOP_ROW_MIDDLE_RIGHT_BOTTOM_LEFT = SextantChar(
+    "\U0001FB19", "Top row, middle-right, bottom-left"
+)
+SEXTANT_LEFT_COLUMN_MIDDLE_RIGHT_BOTTOM_LEFT = SextantChar(
+    "\U0001FB1B", "Left column, middle-right, bottom-left"
+)
+SEXTANT_TOP_RIGHT_MIDDLE_ROW_BOTTOM_LEFT = SextantChar(
+    "\U0001FB1C", "Top-right, middle row, bottom-left"
+)
+SEXTANT_TOP_ROW_MIDDLE_LEFT_BOTTOM_RIGHT = SextantChar(
+    "\U0001FB25", "Top row, middle-left, bottom-right"
+)
+SEXTANT_TOP_ROW_MIDDLE_RIGHT_BOTTOM_RIGHT = SextantChar(
+    "\U0001FB28", "Top row, middle-right, bottom-right"
+)
+SEXTANT_TOP_LEFT_MIDDLE_ROW_BOTTOM_RIGHT = SextantChar(
+    "\U0001FB2A", "Top-left, middle row, bottom-right"
+)
+SEXTANT_TOP_RIGHT_MIDDLE_ROW_BOTTOM_RIGHT = SextantChar(
+    "\U0001FB2B", "Top-right, middle row, bottom-right"
+)
+SEXTANT_TOP_BOTTOM_ROWS = SextantChar("\U0001FB30", "Top and bottom rows filled")
+SEXTANT_LEFT_COLUMN_BOTTOM_ROW = SextantChar("\U0001FB32", "Left column, bottom row")
+SEXTANT_TOP_RIGHT_MIDDLE_LEFT_BOTTOM_ROW = SextantChar(
+    "\U0001FB33", "Top-right, middle-left, bottom row"
+)
+SEXTANT_TOP_LEFT_MIDDLE_RIGHT_BOTTOM_ROW = SextantChar(
+    "\U0001FB36", "Top-left, middle-right, bottom row"
+)
+SEXTANT_TOP_RIGHT_MIDDLE_RIGHT_BOTTOM_ROW = SextantChar(
+    "\U0001FB37", "Top-right, middle-right, bottom row"
+)
+SEXTANT_MIDDLE_BOTTOM_ROWS = SextantChar("\U0001FB39", "Middle and bottom rows filled")
+
+# Five cells
+SEXTANT_ALL_EXCEPT_BOTTOM_RIGHT = SextantChar("\U0001FB1D", "All except bottom-right")
+SEXTANT_ALL_EXCEPT_BOTTOM_LEFT = SextantChar("\U0001FB2C", "All except bottom-left")
+SEXTANT_ALL_EXCEPT_MIDDLE_RIGHT = SextantChar("\U0001FB34", "All except middle-right")
+SEXTANT_ALL_EXCEPT_MIDDLE_LEFT = SextantChar("\U0001FB38", "All except middle-left")
+SEXTANT_ALL_EXCEPT_TOP_RIGHT = SextantChar("\U0001FB3A", "All except top-right")
+SEXTANT_ALL_EXCEPT_TOP_LEFT = SextantChar("\U0001FB3B", "All except top-left")
+
+# Six cells
+SEXTANT_FULL_BLOCK = SextantChar("\U0001FB8B", "All cells filled (full block)")
+
+
 class SextantCoordinate(BaseModel):
     row: int = Field(..., ge=1, le=3)
     col: Literal["A", "B"]
@@ -54,198 +151,155 @@ class SextantCoordMapping(NamedTuple):
     """Mapping between a set of coordinates and a Unicode character."""
 
     coordinate_strings: Tuple[SextantCoordinateString, ...]
-    unicode_char: str
-    description: str = ""  # Optional description of the pattern
+    sextant_char: SextantChar
+
+    @property
+    def unicode_char(self) -> str:
+        """Returns the Unicode character for backward compatibility."""
+        return self.sextant_char.unicode
 
 
 # Function to convert mappings to a dictionary with frozensets as keys
 def create_sextant_dict(
     mappings: List[SextantCoordMapping],
 ) -> Dict[FrozenSet[SextantCoordinateString], str]:
-    return {frozenset(m.coordinate_strings): m.unicode_char for m in mappings}
+    return {frozenset(m.coordinate_strings): m.sextant_char.unicode for m in mappings}
 
 
 # Define all the sextant mappings organized by cell count
 SEXTANT_MAPPINGS_BY_COUNT: List[List[SextantCoordMapping]] = [
     # 0 cells
     [
-        SextantCoordMapping((), "\U0001FB93", "Empty sextant"),
+        SextantCoordMapping((), SEXTANT_EMPTY),
     ],
     # 1 cell
     [
-        SextantCoordMapping((COORD_1A,), "\U0001FB00", "Top-left cell only"),
-        SextantCoordMapping((COORD_1B,), "\U0001FB01", "Top-right cell only"),
-        SextantCoordMapping((COORD_2A,), "\U0001FB03", "Middle-left cell only"),
-        SextantCoordMapping((COORD_2B,), "\U0001FB07", "Middle-right cell only"),
-        SextantCoordMapping((COORD_3A,), "\U0001FB0F", "Bottom-left cell only"),
-        SextantCoordMapping((COORD_3B,), "\U0001FB1E", "Bottom-right cell only"),
+        SextantCoordMapping((COORD_1A,), SEXTANT_TOP_LEFT),
+        SextantCoordMapping((COORD_1B,), SEXTANT_TOP_RIGHT),
+        SextantCoordMapping((COORD_2A,), SEXTANT_MIDDLE_LEFT),
+        SextantCoordMapping((COORD_2B,), SEXTANT_MIDDLE_RIGHT),
+        SextantCoordMapping((COORD_3A,), SEXTANT_BOTTOM_LEFT),
+        SextantCoordMapping((COORD_3B,), SEXTANT_BOTTOM_RIGHT),
     ],
     # 2 cells
     [
-        SextantCoordMapping((COORD_1A, COORD_1B), "\U0001FB02", "Top row filled"),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A), "\U0001FB04", "Left column, top two cells"
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2B), "\U0001FB08", "Top-left and middle-right"
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_3A), "\U0001FB10", "Left column, top and bottom"
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_3B), "\U0001FB1F", "Top-left and bottom-right"
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2B), "\U0001FB09", "Right column, top two cells"
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_3A), "\U0001FB11", "Top-right and bottom-left"
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_3B), "\U0001FB20", "Right column, top and bottom"
-        ),
-        SextantCoordMapping((COORD_2A, COORD_2B), "\U0001FB0B", "Middle row filled"),
-        SextantCoordMapping(
-            (COORD_2A, COORD_3A), "\U0001FB13", "Left column, bottom two cells"
-        ),
-        SextantCoordMapping(
-            (COORD_2A, COORD_3B), "\U0001FB22", "Middle-left and bottom-right"
-        ),
-        SextantCoordMapping(
-            (COORD_2B, COORD_3A), "\U0001FB16", "Middle-right and bottom-left"
-        ),
-        SextantCoordMapping(
-            (COORD_2B, COORD_3B), "\U0001FB26", "Right column, bottom two cells"
-        ),
-        SextantCoordMapping((COORD_3A, COORD_3B), "\U0001FB2D", "Bottom row filled"),
+        SextantCoordMapping((COORD_1A, COORD_1B), SEXTANT_TOP_ROW),
+        SextantCoordMapping((COORD_1A, COORD_2A), SEXTANT_LEFT_TOP_TWO),
+        SextantCoordMapping((COORD_1A, COORD_2B), SEXTANT_TOP_LEFT_MIDDLE_RIGHT),
+        SextantCoordMapping((COORD_1A, COORD_3A), SEXTANT_LEFT_TOP_BOTTOM),
+        SextantCoordMapping((COORD_1A, COORD_3B), SEXTANT_TOP_LEFT_BOTTOM_RIGHT),
+        SextantCoordMapping((COORD_1B, COORD_2B), SEXTANT_RIGHT_TOP_TWO),
+        SextantCoordMapping((COORD_1B, COORD_3A), SEXTANT_TOP_RIGHT_BOTTOM_LEFT),
+        SextantCoordMapping((COORD_1B, COORD_3B), SEXTANT_RIGHT_TOP_BOTTOM),
+        SextantCoordMapping((COORD_2A, COORD_2B), SEXTANT_MIDDLE_ROW),
+        SextantCoordMapping((COORD_2A, COORD_3A), SEXTANT_LEFT_BOTTOM_TWO),
+        SextantCoordMapping((COORD_2A, COORD_3B), SEXTANT_MIDDLE_LEFT_BOTTOM_RIGHT),
+        SextantCoordMapping((COORD_2B, COORD_3A), SEXTANT_MIDDLE_RIGHT_BOTTOM_LEFT),
+        SextantCoordMapping((COORD_2B, COORD_3B), SEXTANT_RIGHT_BOTTOM_TWO),
+        SextantCoordMapping((COORD_3A, COORD_3B), SEXTANT_BOTTOM_ROW),
     ],
     # 3 cells
     [
         SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A), "\U0001FB06", "Top row and middle-left"
+            (COORD_1A, COORD_1B, COORD_2A), SEXTANT_TOP_ROW_MIDDLE_LEFT
         ),
         SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2B), "\U0001FB0A", "Top row and middle-right"
+            (COORD_1A, COORD_1B, COORD_2B), SEXTANT_TOP_ROW_MIDDLE_RIGHT
         ),
         SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_2B), "\U0001FB0C", "Top-left and middle row"
+            (COORD_1A, COORD_2A, COORD_2B), SEXTANT_TOP_LEFT_MIDDLE_ROW
         ),
         SextantCoordMapping(
-            (COORD_1B, COORD_2A, COORD_2B), "\U0001FB0D", "Top-right and middle row"
+            (COORD_1B, COORD_2A, COORD_2B), SEXTANT_TOP_RIGHT_MIDDLE_ROW
         ),
     ],
     # 4 cells
     [
         SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_2B),
-            "\U0001FB0E",
-            "Top two rows filled",
+            (COORD_1A, COORD_1B, COORD_2A, COORD_2B), SEXTANT_TOP_TWO_ROWS
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2B, COORD_3A),
-            "\U0001FB19",
-            "Top row, middle-right, bottom-left",
+            SEXTANT_TOP_ROW_MIDDLE_RIGHT_BOTTOM_LEFT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_2A, COORD_2B, COORD_3A),
-            "\U0001FB1B",
-            "Left column, middle-right, bottom-left",
+            SEXTANT_LEFT_COLUMN_MIDDLE_RIGHT_BOTTOM_LEFT,
         ),
         SextantCoordMapping(
             (COORD_1B, COORD_2A, COORD_2B, COORD_3A),
-            "\U0001FB1C",
-            "Top-right, middle row, bottom-left",
+            SEXTANT_TOP_RIGHT_MIDDLE_ROW_BOTTOM_LEFT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2A, COORD_3B),
-            "\U0001FB25",
-            "Top row, middle-left, bottom-right",
+            SEXTANT_TOP_ROW_MIDDLE_LEFT_BOTTOM_RIGHT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2B, COORD_3B),
-            "\U0001FB28",
-            "Top row, middle-right, bottom-right",
+            SEXTANT_TOP_ROW_MIDDLE_RIGHT_BOTTOM_RIGHT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_2A, COORD_2B, COORD_3B),
-            "\U0001FB2A",
-            "Top-left, middle row, bottom-right",
+            SEXTANT_TOP_LEFT_MIDDLE_ROW_BOTTOM_RIGHT,
         ),
         SextantCoordMapping(
             (COORD_1B, COORD_2A, COORD_2B, COORD_3B),
-            "\U0001FB2B",
-            "Top-right, middle row, bottom-right",
+            SEXTANT_TOP_RIGHT_MIDDLE_ROW_BOTTOM_RIGHT,
         ),
         SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_3A, COORD_3B),
-            "\U0001FB30",
-            "Top and bottom rows filled",
+            (COORD_1A, COORD_1B, COORD_3A, COORD_3B), SEXTANT_TOP_BOTTOM_ROWS
         ),
         SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_3A, COORD_3B),
-            "\U0001FB32",
-            "Left column, bottom row",
+            (COORD_1A, COORD_2A, COORD_3A, COORD_3B), SEXTANT_LEFT_COLUMN_BOTTOM_ROW
         ),
         SextantCoordMapping(
             (COORD_1B, COORD_2A, COORD_3A, COORD_3B),
-            "\U0001FB33",
-            "Top-right, middle-left, bottom row",
+            SEXTANT_TOP_RIGHT_MIDDLE_LEFT_BOTTOM_ROW,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB36",
-            "Top-left, middle-right, bottom row",
+            SEXTANT_TOP_LEFT_MIDDLE_RIGHT_BOTTOM_ROW,
         ),
         SextantCoordMapping(
             (COORD_1B, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB37",
-            "Top-right, middle-right, bottom row",
+            SEXTANT_TOP_RIGHT_MIDDLE_RIGHT_BOTTOM_ROW,
         ),
         SextantCoordMapping(
-            (COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB39",
-            "Middle and bottom rows filled",
+            (COORD_2A, COORD_2B, COORD_3A, COORD_3B), SEXTANT_MIDDLE_BOTTOM_ROWS
         ),
     ],
     # 5 cells
     [
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3A),
-            "\U0001FB1D",
-            "All except bottom-right",
+            SEXTANT_ALL_EXCEPT_BOTTOM_RIGHT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3B),
-            "\U0001FB2C",
-            "All except bottom-left",
+            SEXTANT_ALL_EXCEPT_BOTTOM_LEFT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2A, COORD_3A, COORD_3B),
-            "\U0001FB34",
-            "All except middle-right",
+            SEXTANT_ALL_EXCEPT_MIDDLE_RIGHT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_2B, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB38",
-            "All except middle-left",
+            SEXTANT_ALL_EXCEPT_MIDDLE_LEFT,
         ),
         SextantCoordMapping(
             (COORD_1A, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB3A",
-            "All except top-right",
+            SEXTANT_ALL_EXCEPT_TOP_RIGHT,
         ),
         SextantCoordMapping(
             (COORD_1B, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB3B",
-            "All except top-left",
+            SEXTANT_ALL_EXCEPT_TOP_LEFT,
         ),
     ],
     # 6 cells
     [
         SextantCoordMapping(
             (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            "\U0001FB8B",
-            "All cells filled (full block)",
+            SEXTANT_FULL_BLOCK,
         ),
     ],
 ]
