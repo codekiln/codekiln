@@ -1,5 +1,18 @@
-from typing import NamedTuple, Set, Dict, FrozenSet, Literal, TypeAlias, List, Tuple
+from typing import (
+    NamedTuple,
+    Set,
+    Dict,
+    FrozenSet,
+    Literal,
+    TypeAlias,
+    List,
+    Tuple,
+    ClassVar,
+    Type,
+    AbstractType,
+)
 from pydantic import BaseModel, Field, validator
+from abc import ABC, abstractmethod
 
 
 # Define a Literal type for valid sextant coordinate strings
@@ -40,14 +53,65 @@ class SextantChar(NamedTuple):
         return self.unicode
 
 
+class SextantCoordMapping(NamedTuple):
+    """Mapping between a set of coordinates and a Unicode character."""
+
+    coordinate_strings: Tuple[SextantCoordinateString, ...]
+    sextant_char: SextantChar
+
+    @property
+    def unicode_char(self) -> str:
+        """Returns the Unicode character for backward compatibility."""
+        return self.sextant_char.unicode
+
+
+class SextantCellsActivated(ABC):
+    """Abstract base class for sextant character groups by cell count."""
+
+    @classmethod
+    @abstractmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        """Returns a list of coordinate mappings for this cell count."""
+        pass
+
+    @classmethod
+    def cell_count(cls) -> int:
+        """Returns the number of cells activated for this class."""
+        # Extract the number from the class name
+        for part in cls.__name__.split("Sextant"):
+            if part.endswith("CellsActivated"):
+                num_str = part.split("Cells")[0]
+                if num_str == "Zero":
+                    return 0
+                elif num_str == "One":
+                    return 1
+                elif num_str == "Two":
+                    return 2
+                elif num_str == "Three":
+                    return 3
+                elif num_str == "Four":
+                    return 4
+                elif num_str == "Five":
+                    return 5
+                elif num_str == "Six":
+                    return 6
+        return -1  # Should never happen
+
+
 # Define sextant characters grouped by cell count
-class ZeroSextantCellsActivated:
+class ZeroSextantCellsActivated(SextantCellsActivated):
     """Sextant characters with no cells activated."""
 
     EMPTY = SextantChar("\U0001FB93", "⮓", "Empty sextant")
 
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping((), cls.EMPTY),
+        ]
 
-class OneSextantCellActivated:
+
+class OneSextantCellActivated(SextantCellsActivated):
     """Sextant characters with one cell activated."""
 
     TOP_LEFT = SextantChar("\U0001FB00", "🬀", "Top-left cell only")
@@ -57,8 +121,19 @@ class OneSextantCellActivated:
     BOTTOM_LEFT = SextantChar("\U0001FB0F", "🬏", "Bottom-left cell only")
     BOTTOM_RIGHT = SextantChar("\U0001FB1E", "🬞", "Bottom-right cell only")
 
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping((COORD_1A,), cls.TOP_LEFT),
+            SextantCoordMapping((COORD_1B,), cls.TOP_RIGHT),
+            SextantCoordMapping((COORD_2A,), cls.MIDDLE_LEFT),
+            SextantCoordMapping((COORD_2B,), cls.MIDDLE_RIGHT),
+            SextantCoordMapping((COORD_3A,), cls.BOTTOM_LEFT),
+            SextantCoordMapping((COORD_3B,), cls.BOTTOM_RIGHT),
+        ]
 
-class TwoSextantCellsActivated:
+
+class TwoSextantCellsActivated(SextantCellsActivated):
     """Sextant characters with two cells activated."""
 
     TOP_ROW = SextantChar("\U0001FB02", "🬂", "Top row filled")
@@ -80,8 +155,27 @@ class TwoSextantCellsActivated:
     RIGHT_BOTTOM_TWO = SextantChar("\U0001FB26", "🬦", "Right column, bottom two cells")
     BOTTOM_ROW = SextantChar("\U0001FB2D", "🬭", "Bottom row filled")
 
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping((COORD_1A, COORD_1B), cls.TOP_ROW),
+            SextantCoordMapping((COORD_1A, COORD_2A), cls.LEFT_TOP_TWO),
+            SextantCoordMapping((COORD_1A, COORD_2B), cls.TOP_LEFT_MIDDLE_RIGHT),
+            SextantCoordMapping((COORD_1A, COORD_3A), cls.LEFT_TOP_BOTTOM),
+            SextantCoordMapping((COORD_1A, COORD_3B), cls.TOP_LEFT_BOTTOM_RIGHT),
+            SextantCoordMapping((COORD_1B, COORD_2B), cls.RIGHT_TOP_TWO),
+            SextantCoordMapping((COORD_1B, COORD_3A), cls.TOP_RIGHT_BOTTOM_LEFT),
+            SextantCoordMapping((COORD_1B, COORD_3B), cls.RIGHT_TOP_BOTTOM),
+            SextantCoordMapping((COORD_2A, COORD_2B), cls.MIDDLE_ROW),
+            SextantCoordMapping((COORD_2A, COORD_3A), cls.LEFT_BOTTOM_TWO),
+            SextantCoordMapping((COORD_2A, COORD_3B), cls.MIDDLE_LEFT_BOTTOM_RIGHT),
+            SextantCoordMapping((COORD_2B, COORD_3A), cls.MIDDLE_RIGHT_BOTTOM_LEFT),
+            SextantCoordMapping((COORD_2B, COORD_3B), cls.RIGHT_BOTTOM_TWO),
+            SextantCoordMapping((COORD_3A, COORD_3B), cls.BOTTOM_ROW),
+        ]
 
-class ThreeSextantCellsActivated:
+
+class ThreeSextantCellsActivated(SextantCellsActivated):
     """Sextant characters with three cells activated."""
 
     TOP_ROW_MIDDLE_LEFT = SextantChar("\U0001FB06", "🬆", "Top row and middle-left")
@@ -89,8 +183,25 @@ class ThreeSextantCellsActivated:
     TOP_LEFT_MIDDLE_ROW = SextantChar("\U0001FB0C", "🬌", "Top-left and middle row")
     TOP_RIGHT_MIDDLE_ROW = SextantChar("\U0001FB0D", "🬍", "Top-right and middle row")
 
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A), cls.TOP_ROW_MIDDLE_LEFT
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2B), cls.TOP_ROW_MIDDLE_RIGHT
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2A, COORD_2B), cls.TOP_LEFT_MIDDLE_ROW
+            ),
+            SextantCoordMapping(
+                (COORD_1B, COORD_2A, COORD_2B), cls.TOP_RIGHT_MIDDLE_ROW
+            ),
+        ]
 
-class FourSextantCellsActivated:
+
+class FourSextantCellsActivated(SextantCellsActivated):
     """Sextant characters with four cells activated."""
 
     TOP_TWO_ROWS = SextantChar("\U0001FB0E", "🬎", "Top two rows filled")
@@ -128,8 +239,65 @@ class FourSextantCellsActivated:
     )
     MIDDLE_BOTTOM_ROWS = SextantChar("\U0001FB39", "🬹", "Middle and bottom rows filled")
 
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A, COORD_2B), cls.TOP_TWO_ROWS
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2B, COORD_3A),
+                cls.TOP_ROW_MIDDLE_RIGHT_BOTTOM_LEFT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2A, COORD_2B, COORD_3A),
+                cls.LEFT_COLUMN_MIDDLE_RIGHT_BOTTOM_LEFT,
+            ),
+            SextantCoordMapping(
+                (COORD_1B, COORD_2A, COORD_2B, COORD_3A),
+                cls.TOP_RIGHT_MIDDLE_ROW_BOTTOM_LEFT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A, COORD_3B),
+                cls.TOP_ROW_MIDDLE_LEFT_BOTTOM_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2B, COORD_3B),
+                cls.TOP_ROW_MIDDLE_RIGHT_BOTTOM_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2A, COORD_2B, COORD_3B),
+                cls.TOP_LEFT_MIDDLE_ROW_BOTTOM_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1B, COORD_2A, COORD_2B, COORD_3B),
+                cls.TOP_RIGHT_MIDDLE_ROW_BOTTOM_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_3A, COORD_3B), cls.TOP_BOTTOM_ROWS
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2A, COORD_3A, COORD_3B), cls.LEFT_COLUMN_BOTTOM_ROW
+            ),
+            SextantCoordMapping(
+                (COORD_1B, COORD_2A, COORD_3A, COORD_3B),
+                cls.TOP_RIGHT_MIDDLE_LEFT_BOTTOM_ROW,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2B, COORD_3A, COORD_3B),
+                cls.TOP_LEFT_MIDDLE_RIGHT_BOTTOM_ROW,
+            ),
+            SextantCoordMapping(
+                (COORD_1B, COORD_2B, COORD_3A, COORD_3B),
+                cls.TOP_RIGHT_MIDDLE_RIGHT_BOTTOM_ROW,
+            ),
+            SextantCoordMapping(
+                (COORD_2A, COORD_2B, COORD_3A, COORD_3B), cls.MIDDLE_BOTTOM_ROWS
+            ),
+        ]
 
-class FiveSextantCellsActivated:
+
+class FiveSextantCellsActivated(SextantCellsActivated):
     """Sextant characters with five cells activated."""
 
     ALL_EXCEPT_BOTTOM_RIGHT = SextantChar("\U0001FB1D", "🬝", "All except bottom-right")
@@ -139,11 +307,49 @@ class FiveSextantCellsActivated:
     ALL_EXCEPT_TOP_RIGHT = SextantChar("\U0001FB3A", "🬺", "All except top-right")
     ALL_EXCEPT_TOP_LEFT = SextantChar("\U0001FB3B", "🬻", "All except top-left")
 
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3A),
+                cls.ALL_EXCEPT_BOTTOM_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3B),
+                cls.ALL_EXCEPT_BOTTOM_LEFT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A, COORD_3A, COORD_3B),
+                cls.ALL_EXCEPT_MIDDLE_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2B, COORD_2B, COORD_3A, COORD_3B),
+                cls.ALL_EXCEPT_MIDDLE_LEFT,
+            ),
+            SextantCoordMapping(
+                (COORD_1A, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
+                cls.ALL_EXCEPT_TOP_RIGHT,
+            ),
+            SextantCoordMapping(
+                (COORD_1B, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
+                cls.ALL_EXCEPT_TOP_LEFT,
+            ),
+        ]
 
-class SixSextantCellsActivated:
+
+class SixSextantCellsActivated(SextantCellsActivated):
     """Sextant characters with all six cells activated."""
 
     FULL_BLOCK = SextantChar("\U0001FB8B", "🮋", "All cells filled (full block)")
+
+    @classmethod
+    def get_coordinate_mappings(cls) -> List[SextantCoordMapping]:
+        return [
+            SextantCoordMapping(
+                (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
+                cls.FULL_BLOCK,
+            ),
+        ]
 
 
 class SextantCoordinate(BaseModel):
@@ -168,18 +374,6 @@ class SextantCoordinate(BaseModel):
         return cls(row=row, col=col_part.upper())
 
 
-class SextantCoordMapping(NamedTuple):
-    """Mapping between a set of coordinates and a Unicode character."""
-
-    coordinate_strings: Tuple[SextantCoordinateString, ...]
-    sextant_char: SextantChar
-
-    @property
-    def unicode_char(self) -> str:
-        """Returns the Unicode character for backward compatibility."""
-        return self.sextant_char.unicode
-
-
 # Function to convert mappings to a dictionary with frozensets as keys
 def create_sextant_dict(
     mappings: List[SextantCoordMapping],
@@ -187,172 +381,20 @@ def create_sextant_dict(
     return {frozenset(m.coordinate_strings): m.sextant_char.unicode for m in mappings}
 
 
-# Define all the sextant mappings organized by cell count
+# List of sextant cell classes in order of cell count
+SEXTANT_CELL_CLASSES: List[Type[SextantCellsActivated]] = [
+    ZeroSextantCellsActivated,
+    OneSextantCellActivated,
+    TwoSextantCellsActivated,
+    ThreeSextantCellsActivated,
+    FourSextantCellsActivated,
+    FiveSextantCellsActivated,
+    SixSextantCellsActivated,
+]
+
+# Get mappings from each class
 SEXTANT_MAPPINGS_BY_COUNT: List[List[SextantCoordMapping]] = [
-    # 0 cells
-    [
-        SextantCoordMapping((), ZeroSextantCellsActivated.EMPTY),
-    ],
-    # 1 cell
-    [
-        SextantCoordMapping((COORD_1A,), OneSextantCellActivated.TOP_LEFT),
-        SextantCoordMapping((COORD_1B,), OneSextantCellActivated.TOP_RIGHT),
-        SextantCoordMapping((COORD_2A,), OneSextantCellActivated.MIDDLE_LEFT),
-        SextantCoordMapping((COORD_2B,), OneSextantCellActivated.MIDDLE_RIGHT),
-        SextantCoordMapping((COORD_3A,), OneSextantCellActivated.BOTTOM_LEFT),
-        SextantCoordMapping((COORD_3B,), OneSextantCellActivated.BOTTOM_RIGHT),
-    ],
-    # 2 cells
-    [
-        SextantCoordMapping((COORD_1A, COORD_1B), TwoSextantCellsActivated.TOP_ROW),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A), TwoSextantCellsActivated.LEFT_TOP_TWO
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2B), TwoSextantCellsActivated.TOP_LEFT_MIDDLE_RIGHT
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_3A), TwoSextantCellsActivated.LEFT_TOP_BOTTOM
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_3B), TwoSextantCellsActivated.TOP_LEFT_BOTTOM_RIGHT
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2B), TwoSextantCellsActivated.RIGHT_TOP_TWO
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_3A), TwoSextantCellsActivated.TOP_RIGHT_BOTTOM_LEFT
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_3B), TwoSextantCellsActivated.RIGHT_TOP_BOTTOM
-        ),
-        SextantCoordMapping((COORD_2A, COORD_2B), TwoSextantCellsActivated.MIDDLE_ROW),
-        SextantCoordMapping(
-            (COORD_2A, COORD_3A), TwoSextantCellsActivated.LEFT_BOTTOM_TWO
-        ),
-        SextantCoordMapping(
-            (COORD_2A, COORD_3B), TwoSextantCellsActivated.MIDDLE_LEFT_BOTTOM_RIGHT
-        ),
-        SextantCoordMapping(
-            (COORD_2B, COORD_3A), TwoSextantCellsActivated.MIDDLE_RIGHT_BOTTOM_LEFT
-        ),
-        SextantCoordMapping(
-            (COORD_2B, COORD_3B), TwoSextantCellsActivated.RIGHT_BOTTOM_TWO
-        ),
-        SextantCoordMapping((COORD_3A, COORD_3B), TwoSextantCellsActivated.BOTTOM_ROW),
-    ],
-    # 3 cells
-    [
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A),
-            ThreeSextantCellsActivated.TOP_ROW_MIDDLE_LEFT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2B),
-            ThreeSextantCellsActivated.TOP_ROW_MIDDLE_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_2B),
-            ThreeSextantCellsActivated.TOP_LEFT_MIDDLE_ROW,
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2A, COORD_2B),
-            ThreeSextantCellsActivated.TOP_RIGHT_MIDDLE_ROW,
-        ),
-    ],
-    # 4 cells
-    [
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_2B),
-            FourSextantCellsActivated.TOP_TWO_ROWS,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2B, COORD_3A),
-            FourSextantCellsActivated.TOP_ROW_MIDDLE_RIGHT_BOTTOM_LEFT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_2B, COORD_3A),
-            FourSextantCellsActivated.LEFT_COLUMN_MIDDLE_RIGHT_BOTTOM_LEFT,
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2A, COORD_2B, COORD_3A),
-            FourSextantCellsActivated.TOP_RIGHT_MIDDLE_ROW_BOTTOM_LEFT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_3B),
-            FourSextantCellsActivated.TOP_ROW_MIDDLE_LEFT_BOTTOM_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2B, COORD_3B),
-            FourSextantCellsActivated.TOP_ROW_MIDDLE_RIGHT_BOTTOM_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_2B, COORD_3B),
-            FourSextantCellsActivated.TOP_LEFT_MIDDLE_ROW_BOTTOM_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2A, COORD_2B, COORD_3B),
-            FourSextantCellsActivated.TOP_RIGHT_MIDDLE_ROW_BOTTOM_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_3A, COORD_3B),
-            FourSextantCellsActivated.TOP_BOTTOM_ROWS,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_3A, COORD_3B),
-            FourSextantCellsActivated.LEFT_COLUMN_BOTTOM_ROW,
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2A, COORD_3A, COORD_3B),
-            FourSextantCellsActivated.TOP_RIGHT_MIDDLE_LEFT_BOTTOM_ROW,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2B, COORD_3A, COORD_3B),
-            FourSextantCellsActivated.TOP_LEFT_MIDDLE_RIGHT_BOTTOM_ROW,
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2B, COORD_3A, COORD_3B),
-            FourSextantCellsActivated.TOP_RIGHT_MIDDLE_RIGHT_BOTTOM_ROW,
-        ),
-        SextantCoordMapping(
-            (COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            FourSextantCellsActivated.MIDDLE_BOTTOM_ROWS,
-        ),
-    ],
-    # 5 cells
-    [
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3A),
-            FiveSextantCellsActivated.ALL_EXCEPT_BOTTOM_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3B),
-            FiveSextantCellsActivated.ALL_EXCEPT_BOTTOM_LEFT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_3A, COORD_3B),
-            FiveSextantCellsActivated.ALL_EXCEPT_MIDDLE_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2B, COORD_2B, COORD_3A, COORD_3B),
-            FiveSextantCellsActivated.ALL_EXCEPT_MIDDLE_LEFT,
-        ),
-        SextantCoordMapping(
-            (COORD_1A, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            FiveSextantCellsActivated.ALL_EXCEPT_TOP_RIGHT,
-        ),
-        SextantCoordMapping(
-            (COORD_1B, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            FiveSextantCellsActivated.ALL_EXCEPT_TOP_LEFT,
-        ),
-    ],
-    # 6 cells
-    [
-        SextantCoordMapping(
-            (COORD_1A, COORD_1B, COORD_2A, COORD_2B, COORD_3A, COORD_3B),
-            SixSextantCellsActivated.FULL_BLOCK,
-        ),
-    ],
+    cls.get_coordinate_mappings() for cls in SEXTANT_CELL_CLASSES
 ]
 
 # Create dictionaries for each cell count
