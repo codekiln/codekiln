@@ -355,18 +355,17 @@ SEXTANT_MAPPINGS_BY_COUNT: List[List[SextantCoordMapping]] = [
     ],
 ]
 
-# Flatten the list for operations that need all mappings
-ALL_SEXTANT_MAPPINGS = [
-    mapping for sublist in SEXTANT_MAPPINGS_BY_COUNT for mapping in sublist
-]
-
 # Create dictionaries for each cell count
 CELL_MAPPINGS_BY_ACTIVE_CELLS = tuple(
     create_sextant_dict(mappings) for mappings in SEXTANT_MAPPINGS_BY_COUNT
 )
 
-# Create the main mapping dictionary
-SEXTANT_CHAR_MAP = create_sextant_dict(ALL_SEXTANT_MAPPINGS)
+# Create the main mapping dictionary from the flattened cell mappings
+SEXTANT_CHAR_MAP = {
+    coords: char
+    for cell_count_dict in CELL_MAPPINGS_BY_ACTIVE_CELLS
+    for coords, char in cell_count_dict.items()
+}
 
 # Create a mapping from sets of SextantCoordinate objects to Unicode characters
 SEXTANT_MAP: Dict[FrozenSet[SextantCoordinate], str] = {
