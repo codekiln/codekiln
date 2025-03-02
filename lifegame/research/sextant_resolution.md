@@ -1,80 +1,79 @@
 # Sextant Resolution
-* Using the characters from [Symbols for Legacy Computing - Wikipedia](https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing), we can render a 2x3 grid. These characters aren't on every platform. On the mac, Family name: IBM 3270, PostScript name: 3270-Regular renders these.
+	- Using the characters from [Symbols for Legacy Computing - Wikipedia](https://en.wikipedia.org/wiki/Symbols_for_Legacy_Computing), we can render a 2x3 grid. These characters aren't on every platform. On the mac, Family name: IBM 3270, PostScript name: 3270-Regular renders these.
+    - The following mappings assume that we're mapping a grid that's two cells wide (A, B) and three cells tall (1, 2, 3). As a convention, we'll annotate the grids by listing the cells that are alive in alphabetical order, grouped by the number of cells in the grid that are alive.
 
-The following mappings assume that we're mapping a grid that's two cells wide (A, B) and three cells tall (1, 2, 3). As a convention, we'll annotate the grids by listing the cells that are alive in alphabetical order, grouped by the number of cells in the grid that are alive.
+- ## Zero Cells
+	- Zero characters alive in six-grid: `🮓` (U+1FB93)
 
-## Zero Cells
-* Zero characters alive in six-grid: `🮓` (U+1FB93)
+- ## One Character
+	- 1A: `🬀` 
+	- 1B: `🬁`
+	- 2A: `🬃`
+	- 2B: `🬇`
+	- 3A: `🬏`
+	- 3B: `🬞`
 
-## One Character
-* 1A: `🬀` 
-* 1B: `🬁`
-* 2A: `🬃`
-* 2B: `🬇`
-* 3A: `🬏`
-* 3B: `🬞`
+- ## Two Characters
+	- 1A, 1B: `🬂`
+	- 1A, 2A: `🬄`
+	- 1A, 2B: `🬈`
+	- 1A, 3A: `🬐`
+	- 1A, 3B: `🬟`
+	- 1B, 2B: `🬉`
+	- 1B, 3A: `🬑`
+	- 1B, 3B: `🬠`
+	- 2A, 1B: `🬅`
+	- 2A, 2B: `🬋`
+	- 2A, 3A: `🬓`
+	- 2A, 3B: `🬢`
+	- 2B, 3A: `🬖`
+	- 2B, 3B: `🬦`
+	- 3A, 3B: `🬭`
 
-## Two Characters
-* 1A, 1B: `🬂`
-* 1A, 2A: `🬄`
-* 1A, 2B: `🬈`
-* 1A, 3A: `🬐`
-* 1A, 3B: `🬟`
-* 1B, 2B: `🬉`
-* 1B, 3A: `🬑`
-* 1B, 3B: `🬠`
-* 2A, 1B: `🬅`
-* 2A, 2B: `🬋`
-* 2A, 3A: `🬓`
-* 2A, 3B: `🬢`
-* 2B, 3A: `🬖`
-* 2B, 3B: `🬦`
-* 3A, 3B: `🬭`
+- ## Three Characters
+	- 1A, 1B, 2A: `🬆`
+	- 1A, 1B, 2B: `🬊`
+	- 1A, 2A, 2B: `🬌`
+	- 1B, 2A, 2B: `🬍`
+	- 1A, 1B, 3A: `🬒`
+	- 1B, 2A, 3A: `🬔`
+	- 1A, 2B, 3A: `🬗`
+	- 1B, 2B, 3A: `🬘`
+	- 2A, 2B, 3A: `🬚`
+	- 1A, 1B, 3B: `🬡`
+	- 1A, 2A, 3B: `🬣`
+	- 1B, 2A, 3B: `🬤`
+	- 1A, 2B, 3B: `🬧`
+	- 2A, 2B, 3B: `🬩`
+	- 1A, 3A, 3B: `🬮`
+	- 1B, 3A, 3B: `🬯`
+	- 2A, 3A, 3B: `🬱`
+	- 2B, 3A, 3B: `🬵`
 
-## Three Characters
-* 1A, 1B, 2A: `🬆`
-* 1A, 1B, 2B: `🬊`
-* 1A, 2A, 2B: `🬌`
-* 1B, 2A, 2B: `🬍`
-* 1A, 1B, 3A: `🬒`
-* 1B, 2A, 3A: `🬔`
-* 1A, 2B, 3A: `🬗`
-* 1B, 2B, 3A: `🬘`
-* 2A, 2B, 3A: `🬚`
-* 1A, 1B, 3B: `🬡`
-* 1A, 2A, 3B: `🬣`
-* 1B, 2A, 3B: `🬤`
-* 1A, 2B, 3B: `🬧`
-* 2A, 2B, 3B: `🬩`
-* 1A, 3A, 3B: `🬮`
-* 1B, 3A, 3B: `🬯`
-* 2A, 3A, 3B: `🬱`
-* 2B, 3A, 3B: `🬵`
+- ## Four Characters
+	- 1A, 1B, 2A, 2B: `🬎`
+	- 1A, 2A, 1B, 2B: `🬕`
+	- 1A, 1B, 2B, 3A: `🬙`
+	- 1A, 2A, 2B, 3A: `🬛`
+	- 1B, 2A, 2B, 3A: `🬜`
+	- 1A, 1B, 2A, 3B: `🬥`
+	- 1A, 1B, 2B, 3B: `🬨`
+	- 1A, 2A, 2B, 3B: `🬪`
+	- 1B, 2A, 2B, 3B: `🬫`
+	- 1A, 1B, 3A, 3B: `🬰`
+	- 1A, 2A, 3A, 3B: `🬲`
+	- 1B, 2A, 3A, 3B: `🬳`
+	- 1A, 2B, 3A, 3B: `🬶`
+	- 1B, 2B, 3A, 3B: `🬷`
+	- 2A, 2B, 3A, 3B: `🬹`
 
-## Four Characters
-* 1A, 1B, 2A, 2B: `🬎`
-* 1A, 2A, 1B, 2B: `🬕`
-* 1A, 1B, 2B, 3A: `🬙`
-* 1A, 2A, 2B, 3A: `🬛`
-* 1B, 2A, 2B, 3A: `🬜`
-* 1A, 1B, 2A, 3B: `🬥`
-* 1A, 1B, 2B, 3B: `🬨`
-* 1A, 2A, 2B, 3B: `🬪`
-* 1B, 2A, 2B, 3B: `🬫`
-* 1A, 1B, 3A, 3B: `🬰`
-* 1A, 2A, 3A, 3B: `🬲`
-* 1B, 2A, 3A, 3B: `🬳`
-* 1A, 2B, 3A, 3B: `🬶`
-* 1B, 2B, 3A, 3B: `🬷`
-* 2A, 2B, 3A, 3B: `🬹`
+- ## Five Characters
+	- 1A, 1B, 2A, 2B, 3A: `🬝`
+	- 1A, 1B, 2A, 2B, 3B: `🬬`
+	- 1A, 1B, 2A, 3A, 3B: `🬴`
+	- 1A, 2B, 2B, 3A, 3B: `🬸`
+	- 1A, 2A, 2B, 3A, 3B: `🬺`
+	- 1B, 2A, 2B, 3A, 3B: `🬻`
 
-## Five Characters
-* 1A, 1B, 2A, 2B, 3A: `🬝`
-* 1A, 1B, 2A, 2B, 3B: `🬬`
-* 1A, 1B, 2A, 3A, 3B: `🬴`
-* 1A, 2B, 2B, 3A, 3B: `🬸`
-* 1A, 2A, 2B, 3A, 3B: `🬺`
-* 1B, 2A, 2B, 3A, 3B: `🬻`
-
-## All Six Characters
-* `🮋`
+- ## All Six Characters
+	- `🮋`
