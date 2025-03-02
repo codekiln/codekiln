@@ -1,0 +1,31 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "mise: Install Dependencies",
+            "type": "shell",
+            "command": "mise run install",
+            "problemMatcher": [],
+            "group": {
+                "kind": "build",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "mise: Run Tests",
+            "type": "shell",
+            "command": "mise run test",
+            "problemMatcher": [],
+            "group": {
+                "kind": "test",
+                "isDefault": true
+            }
+        },
+        {
+            "label": "mise: Run lifegame CLI",
+            "type": "shell",
+            "command": "cd lifegame && mise run run",
+            "problemMatcher": []
+        }
+    ]
+} 

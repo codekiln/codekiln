@@ -3,9 +3,9 @@ python = "3.12"
 uv = "latest"
 
 [env]
-PYTHONPATH = "."
+PYTHONPATH = ".."
 # Use mise's built-in virtualenv support
-_.python.venv = { path = ".venv", create = true }
+_.python.venv = { path = "../.venv", create = true }
 
 [tasks]
 # Install the package and its dependencies
