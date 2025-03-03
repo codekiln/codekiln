@@ -35,6 +35,7 @@ from typing import (
     List,
     Tuple,
     Type,
+    cast,
 )
 from abc import ABC, abstractmethod, isabstract
 
@@ -64,6 +65,28 @@ class SextantChar(NamedTuple):
     def __str__(self) -> str:
         """Returns the Unicode character when the object is converted to string."""
         return self.unicode
+
+
+class SextantCoord(NamedTuple):
+    """Represents a coordinate in the sextant grid with row (1-3) and column (0-1)."""
+
+    row: int  # 1-3
+    col: int  # 0 for A, 1 for B
+
+    @classmethod
+    def from_coordinate_string(
+        cls, coord_string: SextantCoordinateString
+    ) -> "SextantCoord":
+        """Creates a SextantCoord from a coordinate string (e.g., '1A')."""
+        row = int(coord_string[0])
+        col = 0 if coord_string[1] == "A" else 1
+        return cls(row=row, col=col)
+
+    def to_coordinate_string(self) -> SextantCoordinateString:
+        """Converts the coordinate to its string representation."""
+        col_letter = "A" if self.col == 0 else "B"
+        coord_str = f"{self.row}{col_letter}"
+        return cast(SextantCoordinateString, coord_str)
 
 
 class SextantCoordMapping(NamedTuple):
@@ -475,33 +498,47 @@ Example:
 """
 
 
-def get_sextant_character(active_cells: Set[SextantCoordinateString]) -> str:
+def get_sextant_character(
+    active_cells: Set[SextantCoordinateString] | Set[SextantCoord],
+) -> str:
     """
     Returns the Unicode sextant character corresponding to the given set of active cells.
 
-    This function maps a set of coordinate strings within a sextant grid to the appropriate
-    Unicode character from the "Symbols for Legacy Computing" block that visually represents
-    those active positions.
+    This function maps a set of coordinates (either as strings or SextantCoord objects) within
+    a sextant grid to the appropriate Unicode character from the "Symbols for Legacy Computing"
+    block that visually represents those active positions.
 
-    The coordinate system uses a simple string format where the first character is the row
-    number (1-3) and the second character is the column letter (A or B). For example:
-    - "1A": Top-left cell
-    - "1B": Top-right cell
-    - "2A": Middle-left cell
-    - "2B": Middle-right cell
-    - "3A": Bottom-left cell
-    - "3B": Bottom-right cell
+    The coordinate system can use either:
+    1. String format where the first character is the row number (1-3) and the second
+       character is the column letter (A or B). For example: "1A", "1B", etc.
+    2. SextantCoord objects with row (1-3) and col (0 for A, 1 for B) attributes.
 
     Args:
-        active_cells: A set of coordinate strings (e.g., {"1A", "1B"}) representing the
-                     positions that should be activated (filled) in the resulting character
+        active_cells: A set of coordinates (either strings like {"1A", "1B"} or
+                     SextantCoord objects) representing the positions that should be
+                     activated (filled) in the resulting character
 
     Returns:
         A Unicode string containing a single sextant character with the specified cells activated.
         Returns "?" if no matching character is found for the given set of coordinates.
 
-    Example:
-        # Get character with top-left and bottom-right cells activated
+    Examples:
+        # Using string coordinates
         char = get_sextant_character({"1A", "3B"})  # Returns "🬟"
+
+        # Using SextantCoord objects
+        char = get_sextant_character({SextantCoord(1, 0), SextantCoord(3, 1)})  # Returns "🬟"
     """
-    return SEXTANT_CHAR_MAP.get(frozenset(active_cells), "?")  # Return '?' if not found
+    # Convert SextantCoord objects to coordinate strings if needed
+    coord_strings: Set[SextantCoordinateString]
+    if active_cells and isinstance(next(iter(active_cells)), SextantCoord):
+        coord_strings = {
+            coord.to_coordinate_string()
+            for coord in cast(Set[SextantCoord], active_cells)
+        }
+    else:
+        coord_strings = cast(Set[SextantCoordinateString], active_cells)
+
+    return SEXTANT_CHAR_MAP.get(
+        frozenset(coord_strings), "?"
+    )  # Return '?' if not found
