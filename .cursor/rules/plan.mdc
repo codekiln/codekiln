@@ -14,9 +14,11 @@ Below is a plan for integrating the lifegame package with the Conway Bio updater
 3. cremmit using the Conventional Commits specification ending with a line `#7 integrate new lifegame package with CI rules that update bio for #1`
 </IMPORTANT_INSTRUCTIONS_FOR_EACH_PROMPT>
 
+
+
 ## Prompt 1: Refactor Conway Bio to Use Lifegame Package
 
-Please refactor the conway-bio.py script to use the lifegame package instead of its current implementation. The refactored script should:
+Please refactor the [conway-bio.py](mdc:conway-bio.py) script to use the lifegame package instead of its current implementation. The refactored script should:
 
 1. Import the necessary functions from the lifegame package (load_grid_from_string, step, render_full)
 2. Use the lifegame package's grid format and functions for:

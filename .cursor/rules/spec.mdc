@@ -9,9 +9,9 @@ alwaysApply: false
 
 The original implementation in this repository is contained in the [conway-bio.py](mdc:conway-bio.py) script, which reads the GitHub bio to extract an 18×8 Conway’s Game of Life board, evolves it one step per run, and then updates the bio via the GitHub API. This script is integrated with GitHub Actions (see the workflows in `.github/workflows`) and uses environment variables for secure handling of credentials.
 
-The goal of this refactor is to add a new, modular Python package named `lifegame` to the repository. This package will encapsulate the game logic, support multiple rule variations and rendering modes, and provide a command-line interface (CLI) to simplify integration into CI/CD workflows (such as GitHub Actions). **This new package will complement the existing files (e.g., [README.md](mdc:README.md), [Dockerfile](mdc:Dockerfile)) rather than replacing them.**
+The goal of this refactor is to add a new, modular Python package named `lifegame` to the repository. This package will encapsulate the game logic, support multiple rule variations and rendering modes, and provide a command-line interface (CLI) to simplify integration into CI/CD workflows (such as GitHub Actions). 
 
-This project uses `pytest` and `poetry`.
+IMPORTANT This project uses `pytest` and `uv` and `mise`. Please use these uniformly everywhere. `mise` should not be used in Docker, though; just use `uv` there.
 
 ## Task Summary
 
@@ -61,11 +61,8 @@ The repository will now include a new package directory named `lifegame` alongsi
 / (Repository Root)
 ├── .ai-coding/
 ├── .github/
-├── [conway-bio.py](mdc:conway-bio.py)
-├── Dockerfile
 ├── LICENSE
 ├── README.md
-├── requirements.txt
 └── lifegame/                 # New package directory
     ├── pyproject.toml       # Package metadata and build configuration
     ├── README.md            # Package-specific documentation (complementing the repository README)
@@ -73,6 +70,7 @@ The repository will now include a new package directory named `lifegame` alongsi
     │   ├── __init__.py
     │   ├── game.py        # Contains game logic and rendering functions
     │   └── cli.py         # Implements the command-line interface using argparse
+    │   └── bio.py         # Implements the logic that was formerly in [conway-bio.py](mdc:conway-bio.py)
     └── tests/
         └── test_game.py   # Unit tests for game logic and rendering
 ```
