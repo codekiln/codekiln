@@ -437,6 +437,13 @@ class SixSextantCellsActivated(SextantCellsActivated):
         )
 
 
+# Function to convert mappings to a dictionary with frozensets as keys
+def create_sextant_dict(
+    mappings: List[SextantCoordMapping],
+) -> Dict[FrozenSet[SextantCoordinateString], str]:
+    return {frozenset(m.coordinate_strings): m.sextant_char.unicode for m in mappings}
+
+
 # Get all subclasses of SextantCellsActivated, sorted by cell count
 SEXTANT_CELL_CLASSES = SextantCellsActivated.get_all_subclasses()
 
