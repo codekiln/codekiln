@@ -1,8 +1,7 @@
 ---
-versionNum: 46efd867
 description: How to Edit Cursor Rules and their appropriate location in the repository
 globs: 
-source: https://gist.github.com/codekiln/242b572c64c1097277fd4c831db91c10
+alwaysApply: false
 ---
 # Cursor Project Rule Editor Rule
 
