@@ -1,7 +1,8 @@
 ---
-description: How to Edit Cursor Rules and their appropriate location in the repository
-globs: 
-alwaysApply: false
+versionNum: b2fe3ee5
+description: Editing Cursor Project Rules
+globs: *.mdc
+source: https://gist.github.com/codekiln/242b572c64c1097277fd4c831db91c10
 ---
 # Cursor Project Rule Editor Rule
 
@@ -64,6 +65,15 @@ actions:
          - In the project root
          - In subdirectories outside .cursor/rules
          - In any other location
+
+      5. ⚠️ CRITICAL WARNING - File Initialization Bug:
+         When the AI creates or edits a .mdc file, DO NOT open the file in the editor
+         until the changes are committed to the repository. There is currently a bug
+         where opening a newly created or edited .mdc file in the editor will cause
+         it to be initialized/erased. To avoid this:
+         - Wait for the AI to finish making changes
+         - Commit the changes to the repository
+         - Only then open the file in the editor if needed
 
 examples:
   - input: |
