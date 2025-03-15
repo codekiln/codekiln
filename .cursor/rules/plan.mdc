@@ -20,7 +20,7 @@ Below is a plan for integrating the lifegame package with the Conway Bio updater
 
 The goal of this step is to refactor the [conway-bio.py](mdc:conway-bio.py) script to push its entire functionality into the lifegame package accessible through [cli.py](mdc:lifegame/lifegame/cli.py) and [bio.py](mdc:lifegame/lifegame/bio.py) instead of its current implementation in the root of the repository. 
 
-The refactored functionality should:
+The refactored functionality in [bio.py](mdc:lifegame/lifegame/bio.py) should:
 
 1. Import the necessary functions from the lifegame package (load_grid_from_string, step, render_full)
 2. Use the lifegame package's grid format and functions for:
