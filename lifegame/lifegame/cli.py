@@ -170,10 +170,10 @@ def main():
 
     # Add command-line options
     parser.add_argument(
-        "--width", type=int, default=20, help="Width of the grid (default: 20)"
+        "--width", type=int, default=19, help="Width of the grid (default: 19)"
     )
     parser.add_argument(
-        "--height", type=int, default=10, help="Height of the grid (default: 10)"
+        "--height", type=int, default=8, help="Height of the grid (default: 8)"
     )
     parser.add_argument(
         "--iterations",
