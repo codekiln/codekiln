@@ -17,6 +17,7 @@ import os
 import sys
 import time
 
+from lifegame.constants import DEFAULT_COLS, DEFAULT_ROWS
 from lifegame.game import (
     load_grid_from_string,
     render_full,
@@ -170,10 +171,16 @@ def main():
 
     # Add command-line options
     parser.add_argument(
-        "--width", type=int, default=19, help="Width of the grid (default: 19)"
+        "--width",
+        type=int,
+        default=DEFAULT_COLS,
+        help=f"Width of the grid (default: {DEFAULT_COLS})",
     )
     parser.add_argument(
-        "--height", type=int, default=8, help="Height of the grid (default: 8)"
+        "--height",
+        type=int,
+        default=DEFAULT_ROWS,
+        help=f"Height of the grid (default: {DEFAULT_ROWS})",
     )
     parser.add_argument(
         "--iterations",
