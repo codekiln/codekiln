@@ -8,17 +8,19 @@ alwaysApply: false
 Below is a plan for integrating the lifegame package with the Conway Bio updater.
 
 <IMPORTANT_INSTRUCTIONS_FOR_EACH_PROMPT>
-1. stop after every prompt
+1. stop after every step
 2. mark off any items that are completed in [todo.md](mdc:.ai-coding/todo.md)
 3. do a scoped `git add`
-3. cremmit using the Conventional Commits specification ending with a line `#7 integrate new lifegame package with CI rules that update bio for #1`
+3. commit using the Conventional Commits specification ending with a line `#7 integrate new lifegame package with CI rules that update bio for #1`
 </IMPORTANT_INSTRUCTIONS_FOR_EACH_PROMPT>
 
 
 
-## Prompt 1: Refactor Conway Bio to Use Lifegame Package
+## Step 1: Refactor Conway Bio to Use Lifegame Package
 
-Please refactor the [conway-bio.py](mdc:conway-bio.py) script to use the lifegame package instead of its current implementation. The refactored script should:
+The goal of this step is to refactor the [conway-bio.py](mdc:conway-bio.py) script to push its entire functionality into the lifegame package accessible through [cli.py](mdc:lifegame/lifegame/cli.py) and [bio.py](mdc:lifegame/lifegame/bio.py) instead of its current implementation in the root of the repository. 
+
+The refactored functionality should:
 
 1. Import the necessary functions from the lifegame package (load_grid_from_string, step, render_full)
 2. Use the lifegame package's grid format and functions for:
@@ -35,9 +37,9 @@ Please refactor the [conway-bio.py](mdc:conway-bio.py) script to use the lifegam
 
 Make sure to test the script locally before committing.
 
-## Prompt 2: Update GitHub Actions Workflow
+## Step 2: Update GitHub Actions Workflow
 
-Please update the GitHub Actions workflow ([conway-bio.py](mdc:conway-bio.py)) to use the lifegame package:
+Please update the GitHub Actions workflow ([conway-bio.yml](mdc:.github/workflows/conway-bio.yml)) to use the [cli.py](mdc:lifegame/lifegame/cli.py) in the `lifegame` package created in step 1:
 
 1. Modify the Docker container configuration to:
    - Use the Dockerfile.lifegame as the base
@@ -50,14 +52,14 @@ Please update the GitHub Actions workflow ([conway-bio.py](mdc:conway-bio.py)) t
 
 Ensure that the workflow is compatible with the refactored conway-bio.py script.
 
-## Prompt 3: Create a Custom Docker Image for Conway Bio
+## Step 3: Create a Custom Docker Image for Conway Bio
 
 Please create a custom Docker image specifically for the Conway Bio updater:
 
-1. Create a new Dockerfile (Dockerfile.conway-bio) that:
-   - Extends the lifegame Docker image
-   - Adds the necessary dependencies for the [conway-bio.py](mdc:conway-bio.py) script (requests, python-dotenv)
-   - Copies the conway-bio.py script into the image
+1. Create a new Dockerfile (`Dockerfile.conway-bio`) that:
+   - Extends [Dockerfile](mdc:lifegame/Dockerfile) image
+   - Copies the `conway-bio.py` script into the image
+   - Adds installs the `lifegame` package
    - Sets the appropriate entrypoint
 2. Update the GitHub Actions workflow to use this new Docker image
 3. Add build instructions to the [README.md](mdc:README.md)
