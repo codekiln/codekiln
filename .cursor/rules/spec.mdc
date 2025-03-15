@@ -1,12 +1,15 @@
 ---
 description: Specification for the Current Task (Product Requirements Document or PRD)
 globs: lifegame/**/*.py,.github/workflows/*.yml
+alwaysApply: false
 ---
 # Developer Specification for `lifegame` Python Package
 
 ## Project Context
 
 The goal of this project is to create a modular Python package named `lifegame` that implements Conway's Game of Life with multiple rule variations and rendering modes. The package will provide a unified command-line interface that serves both as an interactive game runner and as a GitHub bio updater for CI/CD workflows.
+
+A previous version of the game of life was self-contained in [conway-bio.py](mdc:conway-bio.py). It is a goal of the current task to move the functionality of this script into the lifegame package, accessible from inside [cli.py](mdc:lifegame/lifegame/cli.py).
 
 ## Environment Setup
 
