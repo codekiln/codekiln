@@ -10,7 +10,7 @@ from lifegame.bio import (
     get_random_options_by_day,
     parse_bio_to_grid,
 )
-from lifegame.cli import main
+from lifegame.cli import generate_random_grid, load_grid_from_file, main
 
 # Import key functions from game module
 from lifegame.game import (
@@ -33,9 +33,11 @@ __all__ = [
     "step",
     "render_full",
     "render_half",
+    "load_grid_from_file",
     # Bio integration
     "calculate_safe_dimensions",
     "format_grid_for_bio",
     "get_random_options_by_day",
     "parse_bio_to_grid",
+    "generate_random_grid",
 ]

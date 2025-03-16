@@ -42,24 +42,19 @@ import requests
 from lifegame import (
     format_grid_for_bio,
     get_random_options_by_day,
-    load_grid_from_string,
     parse_bio_to_grid,
     render_full,
     render_half,
     step,
 )
-from lifegame.cli import generate_random_grid
+from lifegame.cli import generate_random_grid, load_grid_from_file
+from lifegame.constants import DEFAULT_COLS, DEFAULT_MAX_LENGTH, DEFAULT_ROWS
 
 # Only try to load dotenv if not running in GitHub Actions
 if "GITHUB_ACTIONS" not in os.environ:
     from dotenv import load_dotenv
 
     load_dotenv()
-
-# Default constants for grid dimensions
-DEFAULT_ROWS = 5
-DEFAULT_COLS = 33
-DEFAULT_MAX_LENGTH = 160
 
 
 def parse_arguments():
@@ -142,28 +137,6 @@ def parse_arguments():
     )
 
     return parser.parse_args()
-
-
-def load_grid_from_file(file_path):
-    """
-    Load a grid from a file.
-
-    Args:
-        file_path (str): Path to the file containing the grid
-
-    Returns:
-        list: The loaded grid
-    """
-    try:
-        with open(file_path, "r") as f:
-            grid_str = f.read()
-        return load_grid_from_string(grid_str)
-    except FileNotFoundError:
-        print(f"Error: File '{file_path}' not found.")
-        sys.exit(1)
-    except ValueError as e:
-        print(f"Error parsing grid from file: {e}")
-        sys.exit(1)
 
 
 def preview_evolution(

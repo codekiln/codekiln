@@ -21,6 +21,13 @@ __all__ = [
 import datetime
 from typing import Dict, List, Tuple
 
+from lifegame.constants import (
+    ALIVE_CHARS,
+    EMPTY_CHAR,
+    FULL_CHAR,
+    NEWLINE_CHAR,
+    TALL_BLOCK_CHAR,
+)
 from lifegame.game import render_full, render_half
 
 
@@ -39,7 +46,7 @@ def parse_bio_to_grid(
         tuple: (grid, is_valid) where grid is a 2D list and is_valid indicates if the grid was valid
     """
     # Check if the bio is a flat string (no newlines) that needs to be inflated
-    if "\n" not in current_bio and len(current_bio) > 0:
+    if NEWLINE_CHAR not in current_bio and len(current_bio) > 0:
         # Calculate how many complete rows we can fill
         complete_rows = len(current_bio) // cols
         remainder = len(current_bio) % cols
@@ -51,18 +58,20 @@ def parse_bio_to_grid(
 
         # Add the remainder as a partial row if any
         if remainder > 0:
-            partial_row = current_bio[complete_rows * cols :] + "□" * (cols - remainder)
+            partial_row = current_bio[complete_rows * cols :] + EMPTY_CHAR * (
+                cols - remainder
+            )
             board_lines.append(partial_row)
 
         # Fill in any remaining rows with dead cells
         while len(board_lines) < rows:
-            board_lines.append("□" * cols)
+            board_lines.append(EMPTY_CHAR * cols)
 
         # Join with newlines to create a properly formatted bio
-        current_bio = "\n".join(board_lines)
+        current_bio = NEWLINE_CHAR.join(board_lines)
 
     # Now parse the bio as before
-    lines = current_bio.split("\n")
+    lines = current_bio.split(NEWLINE_CHAR)
     board_lines = lines[:rows]  # Use the first 'rows' lines
 
     # Validate that we have the expected number of lines with correct width
@@ -70,7 +79,7 @@ def parse_bio_to_grid(
     if len(board_lines) < rows:
         valid = False
         # Pad with empty rows if we have fewer than expected
-        board_lines.extend(["□" * cols] * (rows - len(board_lines)))
+        board_lines.extend([EMPTY_CHAR * cols] * (rows - len(board_lines)))
     else:
         for i, line in enumerate(board_lines):
             # Ensure each line has exactly 'cols' characters
@@ -78,24 +87,32 @@ def parse_bio_to_grid(
                 valid = False
                 # Pad or truncate the line to match cols
                 if len(line) < cols:
-                    board_lines[i] = line + "□" * (cols - len(line))
+                    board_lines[i] = line + EMPTY_CHAR * (cols - len(line))
                 else:
                     board_lines[i] = line[:cols]
 
     # If completely invalid (e.g., empty bio), seed a default glider board
     if not valid and len("".join(board_lines).strip()) == 0:
         # Create a default glider in the top-left corner
-        board_lines = ["□" * cols for _ in range(rows)]
+        board_lines = [EMPTY_CHAR * cols for _ in range(rows)]
         if cols >= 3 and rows >= 3:
-            board_lines[0] = "□■□" + "□" * (cols - 3)
-            board_lines[1] = "□□■" + "□" * (cols - 3)
-            board_lines[2] = "■■■" + "□" * (cols - 3)
+            board_lines[0] = (
+                EMPTY_CHAR + FULL_CHAR + EMPTY_CHAR + EMPTY_CHAR * (cols - 3)
+            )
+            board_lines[1] = (
+                EMPTY_CHAR + EMPTY_CHAR + FULL_CHAR + EMPTY_CHAR * (cols - 3)
+            )
+            board_lines[2] = FULL_CHAR + FULL_CHAR + FULL_CHAR + EMPTY_CHAR * (cols - 3)
 
     # Create a 2D grid directly for the lifegame package
     # Convert "■" to 1 (alive), "▀" and "▄" to 1 (alive), and "□" to 0 (dead)
     grid = []
     for line in board_lines:
-        row = [1 if cell in "■▀▄" else 0 for cell in line]
+        row = []
+        for i, cell in enumerate(line):
+            if i < rows:
+                row.append(1 if cell in ALIVE_CHARS else 0)
+
         grid.append(row)
 
     return grid, valid
@@ -126,27 +143,31 @@ def format_grid_for_bio(
     if display_mode == "full":
         # For full mode, replace "█" with "■" and spaces with "□"
         # Note: We're using "■" instead of "█" for better width consistency in GitHub bios
-        formatted_grid = rendered_grid.replace("█", "■").replace(" ", "□")
+        formatted_grid = rendered_grid.replace(TALL_BLOCK_CHAR, FULL_CHAR).replace(
+            " ", EMPTY_CHAR
+        )
     else:
         # For half mode, keep the half blocks and replace spaces with "□"
-        formatted_grid = rendered_grid.replace(" ", "□")
+        formatted_grid = rendered_grid.replace(" ", EMPTY_CHAR)
 
     # Create a display version with newlines for preview purposes
     display_version = formatted_grid
 
     # Ensure the bio doesn't exceed the maximum length
-    total_chars = len(formatted_grid.replace("\n", ""))
-    if total_chars > max_length:
-        # Truncate the bio if necessary, but preserve the original format
-        # Just take the first max_length characters (flattened)
-        flat_bio = formatted_grid.replace("\n", "")
-        truncated_bio = flat_bio[:max_length]
+    # total_chars = len(formatted_grid.replace(NEWLINE_CHAR, ""))
+    # if total_chars > max_length:
+    #     # Truncate the bio if necessary, but preserve the original format
+    #     # Just take the first max_length characters (flattened)
+    #     # flat_bio = formatted_grid.replace(NEWLINE_CHAR, "")
+    #     flat_bio = formatted_grid
+    #     truncated_bio = flat_bio[:max_length]
 
-        # For GitHub, we'll send the truncated flat string
-        formatted_grid = truncated_bio
-    else:
-        # For GitHub, we'll send the flat string without newlines
-        formatted_grid = formatted_grid.replace("\n", "")
+    #     # For GitHub, we'll send the truncated flat string
+    #     formatted_grid = truncated_bio
+    # else:
+    #     # For GitHub, we'll send the flat string without newlines
+    #     # formatted_grid = formatted_grid.replace(NEWLINE_CHAR, "")
+    #     pass
 
     # Return both the GitHub version (flat string) and the display version (with newlines)
     return formatted_grid, display_version
