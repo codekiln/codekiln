@@ -8,8 +8,9 @@
             "program": "${file}",
             "console": "integratedTerminal",
             "justMyCode": true,
+            "python": "${workspaceFolder}/.venv/bin/python",
             "env": {
-                "PYTHONPATH": "${workspaceFolder}"
+                "PYTHONPATH": "${workspaceFolder}:${workspaceFolder}/lifegame"
             }
         },
         {

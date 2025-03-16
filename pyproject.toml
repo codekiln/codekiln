@@ -12,6 +12,7 @@ license = {text = "MIT"}
 dependencies = [
     "requests>=2.28.0",
     "python-dotenv>=1.0.0",
+    {path = "lifegame", develop = true}
 ]
 
 [project.optional-dependencies]
