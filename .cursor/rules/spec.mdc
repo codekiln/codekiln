@@ -1,0 +1,168 @@
+---
+description: Specification for the Current Task (Product Requirements Document or PRD)
+globs: lifegame/**/*.py,.github/workflows/*.yml
+alwaysApply: false
+---
+# Developer Specification for `lifegame` Python Package
+
+## Project Context
+
+The goal of this project is to create a modular Python package named `lifegame` that implements Conway's Game of Life with multiple rule variations and rendering modes. The package will provide a unified command-line interface that serves both as an interactive game runner and as a GitHub bio updater for CI/CD workflows.
+
+A previous version of the game of life was self-contained in [conway-bio.py](mdc:conway-bio.py). It is a goal of the current task to move the functionality of this script into the lifegame package, accessible from inside [cli.py](mdc:lifegame/lifegame/cli.py).
+
+## Environment Setup
+
+The project uses the following tools for environment and dependency management:
+
+- **mise**: Used locally for managing Python versions and virtual environments
+- **uv**: Used for dependency management and virtual environment creation
+- **Virtual Environment**: Single virtualenv stored at `.venv` in the project root
+- **Environment Variables**: GitHub PAT stored in `.env` file (gitignored) for local development
+
+## Task Summary
+
+Develop a Python package (`lifegame`) that implements Conway's Game of Life with a unified CLI that supports both interactive gameplay and automated GitHub bio updates:
+
+- **Unified CLI**: Single entry point that handles both interactive gameplay and GitHub bio updates
+- **Multiple Rule Variations**: Support for standard Conway rules and variants
+- **Advanced Rendering**: Support for both full and half block character display modes
+- **CI/CD Integration**: Seamless integration with GitHub Actions for bio updates
+- **Environment Management**: Consistent use of `mise` locally and `uv` everywhere
+
+## Functional Requirements
+
+### CLI Functionality (`lifegame.cli`)
+
+The CLI should support two primary modes:
+
+1. **Interactive Mode (Default)**:
+   - Configure grid dimensions (`--width`, `--height`, defaults to 19x8)
+   - Select rule variations (`--rules`)
+   - Choose display mode (`--display full|half`, defaults to full)
+   - Set iteration count and delay
+   - Load initial states from files or generate random grids
+
+2. **Bio Update Mode**:
+   - Activated with `--bio-update` flag
+   - Uses GitHub PAT from environment
+   - Uses fixed 19x8 grid dimensions for bio consistency
+   - Supports all rule variations and display modes
+   - Designed for use in CI/CD workflows
+
+### Common Features
+
+- **Rule Sets**:
+  - Standard Conway (B3/S23)
+  - Day & Night (B3678/S34678)
+  - HighLife (B36/S23)
+
+- **Display Modes**:
+  - Full block mode (`█` and space) - default
+  - Half block mode (`▀`, `▄`, `█`, space) - optional
+
+- **Grid Behavior**:
+  - Default dimensions: 19 columns × 8 rows
+  - Toroidal (wraparound) grid
+  - Support for various input formats
+
+## Non-Functional Requirements
+
+- **Python Version**: Python 3.11+
+- **Package Structure**: Modern Python packaging with `pyproject.toml`
+- **Environment Management**:
+  - Local development: `mise` for Python version and virtualenv management
+  - All environments: `uv` for dependency management
+  - Single `.venv` in project root
+- **Security**: GitHub PAT handled via environment variables
+- **Code Quality**: Clear, modular, well-documented code
+
+## Directory Structure
+
+```
+/ (Repository Root)
+├── .venv/                  # Single virtualenv for the project
+├── .env                    # Local environment variables (gitignored)
+├── .github/
+│   └── workflows/
+│       └── conway-bio.yml  # Uses lifegame CLI in bio-update mode
+├── lifegame/
+│   ├── pyproject.toml     # Package metadata and dependencies
+│   ├── README.md          # Package documentation
+│   └── lifegame/
+│       ├── __init__.py
+│       ├── game.py       # Core game logic
+│       ├── cli.py        # Unified CLI implementation
+│       └── bio.py        # GitHub bio integration
+└── tests/
+    └── test_game.py      # Unit tests
+```
+
+## Components
+
+### Unified CLI (`cli.py`)
+
+The CLI module should provide a single entry point with two modes:
+
+```python
+def main():
+    """
+    Main CLI entry point supporting both interactive and bio-update modes.
+    
+    Examples:
+        # Interactive mode with default dimensions (19x8) and display mode (full)
+        lifegame --rules standard
+        
+        # Interactive mode with custom dimensions
+        lifegame --width 30 --height 15 --rules standard
+        
+        # Bio update mode (uses fixed 19x8 dimensions)
+        lifegame --bio-update --rules standard
+        
+        # Bio update mode with half display mode
+        lifegame --bio-update --rules standard --display half
+    """
+```
+
+### GitHub Actions Integration
+
+The workflow should use the unified CLI in bio-update mode:
+
+```yaml
+# .github/workflows/conway-bio.yml
+run: python -m lifegame --bio-update --rules standard  # Uses fixed 19x8 dimensions
+```
+
+## Testing Plan
+
+- **Unit Tests**: Cover core game logic, rendering, and bio updates
+- **Integration Tests**: Verify CLI functionality in both modes
+- **CI/CD Tests**: Ensure smooth operation in GitHub Actions
+
+## Development Workflow
+
+1. **Local Development**:
+   ```bash
+   # Environment setup
+   mise use python@3.11
+   mise install
+   
+   # Install dependencies
+   uv venv .venv
+   uv pip install -e .
+   ```
+
+2. **Running Tests**:
+   ```bash
+   pytest tests/
+   ```
+
+3. **Manual Testing**:
+   ```bash
+   # Interactive mode
+   python -m lifegame
+   
+   # Bio update mode (requires PAT_GITHUB in .env)
+   python -m lifegame --bio-update
+   ```
+

@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Width Tester for Matching Space Characters</title>
+  <style>
+    body {
+      font-family: -apple-system, "system-ui", "Segoe UI",
+                   "Noto Sans", Helvetica, Arial, sans-serif;
+      margin: 20px;
+    }
+    #measure-span {
+      position: absolute;
+      visibility: hidden;
+      white-space: nowrap;
+      font-size: 16px; /* or any size you want to test */
+      top: -9999px;
+    }
+    #results {
+      margin-top: 1em;
+    }
+    .result-block {
+      margin: 1em 0;
+      padding: 1em;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+
+<h1>Width Tester for Matching Space-Like Characters</h1>
+<p>
+  This page measures the rendered width of <code>24</code> repeated glyphs
+  for each of your references (e.g., <code>█</code>, <code>▄</code>, <code>▀</code>)
+  and then compares them to 24 copies of various space-like Unicode code points.
+  If the width matches within a small tolerance, we'll show the candidate as a match.
+</p>
+
+<div id="results"></div>
+<span id="measure-span"></span>
+
+<script>
+/*********************************************************
+ * CONFIG
+ *********************************************************/
+const NUM_COPIES = 24;  // how many times to repeat each glyph
+const TOLERANCE = 0.5;  // pixel tolerance for "matching" widths
+
+// If you want to test each reference glyph separately, list them individually:
+// e.g. ["█", "▄", "▀"]
+// Or if you want them as a single chunk, do ["█▄▀"]
+const REFERENCE_GLYPHS = ["█", "▄", "▀"];
+
+// A set of "space-like" or otherwise invisible/blank characters
+// (You can add or remove any you'd like to test.)
+const SPACE_CANDIDATES = [
+  " ",           // U+0020 SPACE
+  "\u00A0",      // NO-BREAK SPACE
+  "\u2000",      // EN QUAD
+  "\u2001",      // EM QUAD
+  "\u2002",      // EN SPACE
+  "\u2003",      // EM SPACE
+  "\u2004",      // THREE-PER-EM SPACE
+  "\u2005",      // FOUR-PER-EM SPACE
+  "\u2006",      // SIX-PER-EM SPACE
+  "\u2007",      // FIGURE SPACE
+  "\u2008",      // PUNCTUATION SPACE
+  "\u2009",      // THIN SPACE
+  "\u200A",      // HAIR SPACE
+  "\u202F",      // NARROW NO-BREAK SPACE
+  "\u205F",      // MEDIUM MATHEMATICAL SPACE
+  "\u3000",      // IDEOGRAPHIC SPACE
+  "\u200B",      // ZERO WIDTH SPACE (likely 0 px, but let's see!)
+  "\uFEFF",      // ZERO WIDTH NO-BREAK SPACE
+  // You could also test invisible control chars or
+  // \u3164 (Hangul Filler), etc. but they're less likely to help.
+];
+
+/*********************************************************
+ * SETUP
+ *********************************************************/
+const measureSpan = document.getElementById("measure-span");
+const resultsDiv = document.getElementById("results");
+
+// Helper: measure pixel width of a string in the forced font
+function measureWidth(str) {
+  measureSpan.textContent = str;
+  return measureSpan.getBoundingClientRect().width;
+}
+
+/*********************************************************
+ * MAIN
+ *********************************************************/
+function runTest() {
+  // For each reference glyph, measure the total width (24 copies)
+  REFERENCE_GLYPHS.forEach(glyph => {
+    const refStr = glyph.repeat(NUM_COPIES);
+    const refWidth = measureWidth(refStr);
+
+    // We'll store matches here
+    const matches = [];
+
+    // Test each candidate
+    SPACE_CANDIDATES.forEach(spaceChar => {
+      const testStr = spaceChar.repeat(NUM_COPIES);
+      const w = measureWidth(testStr);
+      const diff = Math.abs(w - refWidth);
+      if (diff < TOLERANCE) {
+        matches.push({
+          char: spaceChar,
+          width: w,
+          diff: diff
+        });
+      }
+    });
+
+    // Create a block in the DOM to show results
+    const block = document.createElement("div");
+    block.className = "result-block";
+
+    block.innerHTML = `
+      <strong>Reference Glyph: "${glyph}" (×${NUM_COPIES})</strong><br/>
+      Reference width: ${refWidth.toFixed(2)} px
+      ${matches.length === 0 ? 
+          `<p>No matching spaces found within ${TOLERANCE}px tolerance.</p>` :
+          `<p>Matching spaces (tolerance ±${TOLERANCE}px):</p>`}
+    `;
+
+    // List matches
+    if (matches.length > 0) {
+      const list = document.createElement("ul");
+      matches.forEach(m => {
+        // We'll show a textual "U+XXXX" too
+        const codepoint = m.char.codePointAt(0).toString(16).toUpperCase().padStart(4, "0");
+        const li = document.createElement("li");
+
+        // If it's invisible, let's label it [space], etc.
+        // We'll also show the measured width for each match
+        li.textContent = 
+          `Candidate U+${codepoint} => width=${m.width.toFixed(2)}px, diff=${m.diff.toFixed(2)}px`;
+        
+        list.appendChild(li);
+      });
+      block.appendChild(list);
+    }
+
+    resultsDiv.appendChild(block);
+  });
+}
+
+// Kick off the test
+runTest();
+</script>
+
+</body>
+</html>

@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>Unicode Sextant Auto-Mapping (🬀–🬿)</title>
+  <style>
+    body {
+      font-family: -apple-system, "system-ui", "Segoe UI",
+                   "Noto Sans", Helvetica, Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.5;
+    }
+    #output {
+      white-space: pre-wrap;
+      background: #f8f8f8;
+      padding: 1em;
+      border: 1px solid #ccc;
+      font-family: monospace;
+      max-height: 400px;
+      overflow-y: auto;
+    }
+    .char-preview {
+      display: inline-block;
+      font-size: 24px;
+      margin: 5px;
+      padding: 5px;
+      border: 1px solid #ddd;
+      text-align: center;
+      width: 30px;
+    }
+    canvas {
+      display: none;
+    }
+  </style>
+</head>
+<body>
+
+<h1>🬀–🬿 Sextant Unicode Mapper (Fixed)</h1>
+<p>
+  This tool scans **Unicode sextant characters (🬀–🬿)** to determine
+  which **2×3 grid regions** are filled in each glyph.
+</p>
+
+<button onclick="runMapping()">Run Mapping</button>
+
+<div id="output">Click "Run Mapping" to start...</div>
+
+<canvas id="canvas" width="24" height="36"></canvas>
+
+<script>
+/*********************************************************
+ * CONFIG: Sextant Unicode Range
+ *********************************************************/
+const START_UNICODE = 0x1FB00; // 🬀 (U+1FB00)
+const END_UNICODE = 0x1FB7F;   // 🬿 (U+1FB7F)
+
+// Define the 2×3 grid mapping
+const ZONES = [
+  { name: "1A", x: 4, y: 6 },  // Top-left
+  { name: "1B", x: 16, y: 6 },  // Top-right
+  { name: "2A", x: 4, y: 18 },  // Middle-left
+  { name: "2B", x: 16, y: 18 },  // Middle-right
+  { name: "3A", x: 4, y: 30 }, // Bottom-left
+  { name: "3B", x: 16, y: 30 }  // Bottom-right
+];
+
+// Threshold for detecting a "filled" pixel
+const BRIGHTNESS_THRESHOLD = 180;  // Raised slightly for more accurate detection
+
+/*********************************************************
+ * FUNCTION: Measure Pixel Brightness
+ *********************************************************/
+function getBrightness(r, g, b) {
+  return (r + g + b) / 3;  // Average RGB value
+}
+
+/*********************************************************
+ * FUNCTION: Scan a Character's 2×3 Grid
+ *********************************************************/
+function analyzeCharacter(ctx, char) {
+  const imageData = ctx.getImageData(0, 0, 24, 36);
+  const data = imageData.data;
+
+  let activeZones = [];
+
+  // Scan each defined zone by checking **multiple pixels per zone**
+  ZONES.forEach(zone => {
+    let totalBrightness = 0;
+    let numPixels = 0;
+
+    // Scan a small 3x3 region around the center pixel
+    for (let dx = -1; dx <= 1; dx++) {
+      for (let dy = -1; dy <= 1; dy++) {
+        const px = zone.x + dx;
+        const py = zone.y + dy;
+        const pixelIndex = (py * 24 + px) * 4;
+        
+        const brightness = getBrightness(
+          data[pixelIndex],   // Red
+          data[pixelIndex+1], // Green
+          data[pixelIndex+2]  // Blue
+        );
+        
+        totalBrightness += brightness;
+        numPixels++;
+      }
+    }
+
+    const avgBrightness = totalBrightness / numPixels;
+    
+    if (avgBrightness < BRIGHTNESS_THRESHOLD) {
+      activeZones.push(zone.name);
+    }
+  });
+
+  return activeZones;
+}
+
+/*********************************************************
+ * FUNCTION: Run Mapping on All Sextant Characters
+ *********************************************************/
+function runMapping() {
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
+
+  // Configure text drawing
+  ctx.font = "24px -apple-system, system-ui, sans-serif";
+  ctx.textBaseline = "top";
+  ctx.fillStyle = "#000000"; // Black text on white background
+
+  let mappings = {};
+  let outputHTML = "<h2>Scanned Characters:</h2>";
+
+  for (let code = START_UNICODE; code <= END_UNICODE; code++) {
+    const char = String.fromCodePoint(code);
+    ctx.clearRect(0, 0, canvas.width, canvas.height);
+    ctx.fillText(char, 2, 2); // Draw character onto canvas
+
+    let zones = analyzeCharacter(ctx, char);
+    mappings[char] = zones;
+
+    outputHTML += `<span class="char-preview">${char}</span>`;
+  }
+
+  document.getElementById("output").innerHTML = outputHTML + "<h2>Mapping:</h2><pre>" + JSON.stringify(mappings, null, 2) + "</pre>";
+}
+</script>
+
+</body>
+</html>

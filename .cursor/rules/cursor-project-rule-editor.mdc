@@ -1,0 +1,77 @@
+---
+versionNum: 34dad0cf
+description: Editing Cursor Project Rules
+globs: *.mdc
+source: https://gist.github.com/codekiln/242b572c64c1097277fd4c831db91c10
+---
+# Cursor Project Rule Editor
+
+This rule defines the workflow for editing Cursor project rules, ensuring they are properly placed and formatted.
+
+<rule>
+name: cursor_project_rule_editor
+description: Standards for editing Cursor project rules
+filters:
+  - type: file_extension
+    pattern: "\\.mdc$"
+  - type: content
+    pattern: "(?s)<rule>.*?</rule>"
+
+actions:
+  - type: suggest
+    message: |
+      When editing Cursor project rules:
+
+      1. **Create Draft**:
+         - Create a draft in `ai-coding/cursor-project-rule/draft/`:
+         ```bash
+         mkdir -p ai-coding/cursor-project-rule/draft
+         ```
+         - Draft should follow the same naming as the target rule
+         - Draft should include proper frontmatter and formatting
+
+      2. **Request Approval**:
+         - Present the draft to the user for review
+         - Wait for explicit approval before proceeding
+         - If changes are requested, update the draft
+
+      3. **Apply Changes**:
+         - Upon approval, copy the draft to `.cursor/rules/` (forcing update if exists):
+         ```bash
+         cp -f ai-coding/cursor-project-rule/draft/rule-name.mdc .cursor/rules/
+         ```
+         - Remove the draft:
+         ```bash
+         rm ai-coding/cursor-project-rule/draft/rule-name.mdc
+         ```
+
+      4. **File Organization**:
+         ```
+         PROJECT_ROOT/
+         ├── .cursor/
+         │   └── rules/
+         │       └── rule-name.mdc    # Final rule
+         └── ai-coding/
+             └── cursor-project-rule/
+                 └── draft/
+                     └── rule-name.mdc # Draft (temporary)
+         ```
+
+examples:
+  - input: |
+      # Draft Rule
+
+      ```
+      ---
+      description: "Example rule"
+      globs: "*.mdc"
+      ---
+      # Example Rule
+      This is a draft rule.
+      ```
+    output: "Correctly formatted draft rule"
+
+metadata:
+  priority: high
+  version: 1.0
+</rule>

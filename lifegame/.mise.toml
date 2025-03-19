@@ -1,0 +1,16 @@
+[tools]
+python = "3.12"
+uv = "latest"
+
+[env]
+PYTHONPATH = ".."
+# Use mise's built-in virtualenv support
+_.python.venv = { path = "../.venv", create = true }
+
+[tasks]
+# Install the package and its dependencies
+install = { run = "uv pip install -e '.[dev]'" }
+# Run tests
+test = { run = "python -m pytest" }
+# Run the lifegame CLI
+run = { run = "python -m lifegame.cli", depends = ["install"] } 

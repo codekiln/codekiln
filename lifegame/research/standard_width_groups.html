@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <title>GitHub Font Tester: Box, Block, Geometric, Legacy, Code Page 437</title>
+  <style>
+    body {
+      font-family: -apple-system, "system-ui", "Segoe UI",
+                   "Noto Sans", Helvetica, Arial, sans-serif;
+      margin: 20px;
+      line-height: 1.5;
+    }
+
+    #measure-span {
+      position: absolute;
+      visibility: hidden;
+      white-space: nowrap;
+      font-size: 16px;
+      top: -9999px;
+    }
+
+    .group-container {
+      margin-top: 1em;
+      padding: 1em;
+      background: #f8f8f8;
+      border: 1px solid #ddd;
+    }
+
+    .group-title {
+      font-weight: bold;
+      margin-bottom: 0.5em;
+    }
+  </style>
+</head>
+<body>
+
+<h1>GitHub Font Tester: Box, Block, Geometric, Legacy, Code Page 437</h1>
+<p>
+  This tool measures the width of Unicode characters from multiple blocks in GitHub’s font stack, grouping characters that align perfectly.
+</p>
+
+<div id="results"></div>
+<span id="measure-span"></span>
+
+<script>
+/*********************************************************
+ * CONFIG: Unicode Ranges
+ *********************************************************/
+const NUM_COPIES = 30;  // How many times to repeat each character for measurement
+const TOLERANCE = 0.5;  // Pixel tolerance for "same width" groupings
+
+// Box-Drawing Characters (U+2500–U+257F)
+const BOX_DRAWING_CHARS = Array.from({ length: 128 }, (_, i) => String.fromCodePoint(0x2500 + i));
+
+// Block Elements (U+2580–U+259F)
+const BLOCK_ELEMENTS = Array.from({ length: 32 }, (_, i) => String.fromCodePoint(0x2580 + i));
+
+// Geometric Shapes (U+25A0–U+25FF)
+const GEOMETRIC_SHAPES = Array.from({ length: 96 }, (_, i) => String.fromCodePoint(0x25A0 + i));
+
+// Symbols for Legacy Computing (U+1FB00–U+1FBFF)
+const LEGACY_COMPUTING_CHARS = Array.from({ length: 256 }, (_, i) => String.fromCodePoint(0x1FB00 + i));
+
+// Code Page 437 (IBM PC extended ASCII, mapped to Unicode equivalents)
+const CODE_PAGE_437 = [
+  "░", "▒", "▓", "█", "▄", "▌", "▐", "▀",  // Shading & block chars
+  "◆", "◊", "○", "●", "■", "□", "▲", "▼", // Shapes
+  "⌠", "⌡", "≈", "≡", "≤", "≥", "π", "∩", // Math & symbols
+  "♥", "♦", "♣", "♠", "♂", "♀", "♪", "♫"  // Symbols & suits
+];
+
+// Mathematical Operators (U+2200–U+22FF)
+const MATH_SYMBOLS = Array.from({ length: 256 }, (_, i) => String.fromCodePoint(0x2200 + i));
+
+// Braille Patterns (U+2800–U+28FF) (For Experimental Use)
+const BRAILLE_PATTERNS = Array.from({ length: 256 }, (_, i) => String.fromCodePoint(0x2800 + i));
+
+// Combine all test characters
+const ALL_TEST_CHARS = [
+  ...BOX_DRAWING_CHARS, 
+  ...BLOCK_ELEMENTS,
+  ...GEOMETRIC_SHAPES, 
+  ...LEGACY_COMPUTING_CHARS, 
+  ...CODE_PAGE_437,
+  ...MATH_SYMBOLS,
+  ...BRAILLE_PATTERNS
+];
+
+/*********************************************************
+ * MEASUREMENT FUNCTION
+ *********************************************************/
+const measureSpan = document.getElementById("measure-span");
+const resultsDiv = document.getElementById("results");
+
+// Helper: measure pixel width of a string in GitHub's font stack
+function measureWidth(str) {
+  measureSpan.textContent = str;
+  return measureSpan.getBoundingClientRect().width;
+}
+
+/*********************************************************
+ * MAIN FUNCTION: Run the test and group characters
+ *********************************************************/
+function runTest() {
+  const widthGroups = new Map();
+
+  // Measure each character
+  ALL_TEST_CHARS.forEach(char => {
+    const testStr = char.repeat(NUM_COPIES);
+    const width = measureWidth(testStr);
+
+    // Find an existing width group or create a new one
+    let foundGroup = false;
+    for (let [groupWidth, chars] of widthGroups.entries()) {
+      if (Math.abs(groupWidth - width) < TOLERANCE) {
+        chars.push(char);
+        foundGroup = true;
+        break;
+      }
+    }
+    if (!foundGroup) {
+      widthGroups.set(width, [char]);
+    }
+  });
+
+  // Render the results
+  resultsDiv.innerHTML = "";
+  Array.from(widthGroups.entries())
+    .sort((a, b) => a[0] - b[0]) // Sort by width
+    .forEach(([width, chars], index) => {
+      const groupDiv = document.createElement("div");
+      groupDiv.className = "group-container";
+      groupDiv.innerHTML = `<div class="group-title">Group ${index + 1} (Width: ${width.toFixed(2)}px)</div>
+                            <div style="font-size: 24px;">${chars.join(" ")}</div>`;
+      resultsDiv.appendChild(groupDiv);
+    });
+}
+
+// Run the test
+runTest();
+</script>
+
+</body>
+</html>

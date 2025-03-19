@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=42", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "lifegame"
+version = "0.1.0"
+description = "A Python package implementing Conway's Game of Life with multiple rule variations and rendering modes"
+authors = [
+    {name = "codekiln", email = "codekiln@pm.me"}
+]
+readme = "README.md"
+requires-python = ">=3.11"
+license = {text = "MIT"}
+dependencies = [
+    "requests>=2.32.0",
+    "python-dotenv>=1.0.0",
+    "numpy>=2.2.3",
+    "pillow>=10.0.0",
+]
+
+[project.optional-dependencies]
+dev = [
+    "pytest>=7.0.0",
+]
+
+[project.scripts]
+lifegame-run = "lifegame.cli:main"
+
+[tool.setuptools]
+packages = ["lifegame"] 
