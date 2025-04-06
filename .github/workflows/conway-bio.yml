@@ -16,7 +16,12 @@ jobs:
       with:
         fetch-depth: 1    # Shallow clone for faster checkout
     
+    - name: Install lifegame package
+      run: |
+        cd lifegame
+        uv pip install -e .
+
     - name: Run Conway Bio updater
       env:
         PAT_GITHUB: ${{ secrets.PAT_GITHUB }}
-      run: python conway-bio.py 
+      run: python -m lifegame --bio-update --rules standard 
