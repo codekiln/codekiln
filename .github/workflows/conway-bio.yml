@@ -16,6 +16,11 @@ jobs:
       with:
         fetch-depth: 1    # Shallow clone for faster checkout
     
+    - name: Install uv
+      run: |
+        curl -LsSf https://astral.sh/uv/install.sh | sh
+        export PATH="/root/.cargo/bin:$PATH"
+
     - name: Install lifegame package
       run: |
         cd lifegame
