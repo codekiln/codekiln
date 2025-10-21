@@ -1,6 +1,6 @@
 # hey 👋, nice to meet you. I am `codekiln`
 
-## Systems Architect, AI Engineer, [Cyborg](https://codekiln.github.io/logseq-encode-garden/)
+## AI Engineer, [Cyborg](https://codekiln.github.io/logseq-encode-garden/)
 
 - 🌱 EdTech - AI pedagogy
 - 🎹 piano fun: - https://soundcloud.com/codekiln
